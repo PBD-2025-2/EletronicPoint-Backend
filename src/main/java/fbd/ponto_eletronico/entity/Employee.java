@@ -1,5 +1,6 @@
 package fbd.ponto_eletronico.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.repository.Query;
@@ -18,10 +19,7 @@ public class Employee {
     private Long id;
     private String name;
     private String cpf;
-//    @ManyToOne
-//    @JoinColumn(columnDefinition = "ID_Company", referencedColumnName = "id")
-//    private Company company;
-
-//    private String company_name = company.getName();
+    @ManyToOne
+    private Company company;
 
 }

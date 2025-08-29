@@ -1,7 +1,7 @@
 package fbd.ponto_eletronico.controller;
 
-import fbd.ponto_eletronico.dto.RolesEmployeesDTO;
-import fbd.ponto_eletronico.service.RolesEmployeesService;
+import fbd.ponto_eletronico.dto.EmployeesRolesDTO;
+import fbd.ponto_eletronico.service.EmployeesRolesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +13,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("roles_employees")
-public class RolesEmployeesController {
-    private final RolesEmployeesService rolesEmployeesService;
+public class EmployeesRolesController {
+    private final EmployeesRolesService employeesRolesService;
 
     @GetMapping
-    public ResponseEntity<List<RolesEmployeesDTO>> listAll() {
-        return ResponseEntity.ok(rolesEmployeesService.listAll());
+    public ResponseEntity<List<EmployeesRolesDTO>> listAll() {
+        return ResponseEntity.ok(employeesRolesService.listAll());
     }
 }

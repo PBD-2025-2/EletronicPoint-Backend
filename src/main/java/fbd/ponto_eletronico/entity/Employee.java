@@ -20,6 +20,7 @@ public class Employee {
     private String name;
     private String cpf;
     @ManyToOne
+    @JoinColumn(columnDefinition = "company_id", referencedColumnName = "id")
     private Company company;
 
 }

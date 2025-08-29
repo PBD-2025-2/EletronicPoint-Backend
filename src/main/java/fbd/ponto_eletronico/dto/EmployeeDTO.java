@@ -11,8 +11,6 @@ import lombok.Data;
 public class EmployeeDTO {
     private Long id;
     private String name;
-    @ManyToOne
-    @JoinColumn(columnDefinition = "company_id", referencedColumnName = "id")
     @JsonIgnoreProperties({"id", "cnpj"})
     private Company company;
 

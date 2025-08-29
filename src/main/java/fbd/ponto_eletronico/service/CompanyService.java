@@ -17,6 +17,7 @@ public class CompanyService {
 
     public List<CompanyDTO> listAll(){
         List<Company> companies = companyRepository.findAll();
+
         return companyMapper.companyDtos(companies);
     }
 

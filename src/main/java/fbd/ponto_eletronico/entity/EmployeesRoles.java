@@ -1,5 +1,6 @@
 package fbd.ponto_eletronico.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,17 +12,17 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "roles_employees")
-public class RolesEmployees {
+@Table(name = "employees_roles")
+public class EmployeesRoles {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private boolean status;
     private Integer work_regime;
-
     @ManyToOne
+    @JoinColumn(columnDefinition = "employee_id", referencedColumnName = "id")
     private Employee employee;
-
     @ManyToOne
+    @JoinColumn(columnDefinition = "role_id", referencedColumnName = "id")
     private Role role;
 }

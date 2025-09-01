@@ -9,4 +9,5 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RolesEmployeesMapper {
     List<EmployeesRolesDTO> employeesRolesDtos(List<EmployeesRoles> employeesRoles);
+
 }

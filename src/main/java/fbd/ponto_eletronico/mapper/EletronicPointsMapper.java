@@ -11,3 +11,4 @@ public interface EletronicPointsMapper {
     List<EletronicPointsDTO> eletronicPointsDto(List<EletronicPoints> eletronicPoints);
 
 }
+

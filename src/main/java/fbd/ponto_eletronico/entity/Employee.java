@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties({"cpf"})
 public class Employee {
 
     @Id

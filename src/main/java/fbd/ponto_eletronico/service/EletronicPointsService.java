@@ -18,9 +18,11 @@ public class EletronicPointsService {
     private final EletronicPointsRepository eletronicPointsRepository;
     private final EletronicPointsMapper eletronicPointsMapper;
 
-    public List<EletronicPointsDTO> listAll(){
+    public List<EletronicPointsDTO> listAll() {
         List<EletronicPoints> eletronicPoints = eletronicPointsRepository.findAll();
-        log.info("Fileds: {}", eletronicPointsMapper.eletronicPointsDto(eletronicPoints));
+        EletronicPoints eletronicPoints1 = eletronicPoints.get(1);
         return eletronicPointsMapper.eletronicPointsDto(eletronicPoints);
     }
+
+
 }

@@ -15,7 +15,7 @@ public class EmployeesRolesDTO {
     private Long id;
     private Boolean status;
     private Integer work_regime;
-    @JsonIgnoreProperties({"id", "cpf", "company"})
+    @JsonIgnoreProperties({"id", "company"})
     private Employee employee;
     @JsonIgnoreProperties({"id", "company"})
     private Role role;

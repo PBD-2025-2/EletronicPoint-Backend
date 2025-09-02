@@ -28,7 +28,7 @@ public class EletronicPoints {
     private Integer status;
     @ManyToOne
     @JoinColumn(columnDefinition = "employee_roles_id", referencedColumnName = "id")
-    private EmployeesRoles employeeRoles;
+    private EmployeesRoles employeesRoles;
 
 
 

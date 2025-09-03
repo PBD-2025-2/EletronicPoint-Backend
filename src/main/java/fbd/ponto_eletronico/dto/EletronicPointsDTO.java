@@ -1,7 +1,8 @@
 package fbd.ponto_eletronico.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fbd.ponto_eletronico.entity.EmployeesRoles;
+import fbd.ponto_eletronico.serialization.EmployeesRolesSerialize;
 import lombok.Data;
 
 import java.sql.Time;
@@ -17,7 +18,6 @@ public class EletronicPointsDTO {
     private Time register_4;
     private LocalDate endDate;
     private Integer status;
-    @JsonIgnoreProperties(value = {"id"})
+    @JsonSerialize(using = EmployeesRolesSerialize.class)
     private EmployeesRoles employeesRoles;
-
 }

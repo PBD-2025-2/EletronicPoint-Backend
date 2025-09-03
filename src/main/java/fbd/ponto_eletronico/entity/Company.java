@@ -1,6 +1,5 @@
 package fbd.ponto_eletronico.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import lombok.Setter;
 @Table(name = "companies")
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"cnpj"})
 public class Company {
 
     @Id
@@ -21,5 +19,4 @@ public class Company {
     private Long id;
     private String name;
     private String cnpj;
-
 }

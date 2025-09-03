@@ -19,7 +19,7 @@ public class EletronicPoints {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Time startDate;
+    private LocalDate startDate;
     private Time register_1;
     private Time register_2;
     private Time register_3;
@@ -29,7 +29,4 @@ public class EletronicPoints {
     @ManyToOne
     @JoinColumn(columnDefinition = "employee_roles_id", referencedColumnName = "id")
     private EmployeesRoles employeesRoles;
-
-
-
 }

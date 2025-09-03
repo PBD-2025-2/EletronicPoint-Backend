@@ -5,12 +5,8 @@ import fbd.ponto_eletronico.entity.Company;
 import fbd.ponto_eletronico.entity.Employee;
 import fbd.ponto_eletronico.entity.Role;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.jpa.repository.Query;
 
-@Getter
-@Setter
+@Data
 public class EmployeesRolesDTO {
     private Long id;
     private Boolean status;
@@ -21,6 +17,4 @@ public class EmployeesRolesDTO {
     private Role role;
     @JsonIgnoreProperties({"id", "cnpj"})
     private Company company;
-
-
 }

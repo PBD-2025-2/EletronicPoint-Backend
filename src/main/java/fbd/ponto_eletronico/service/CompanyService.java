@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,4 +29,13 @@ public class CompanyService {
                 .orElseThrow(() ->new BadRequestException("Id Not Found"));
     }
 
+    public List<CompanyDTO> findByName(String name) {
+        List<Company> companies = companyRepository.findByName(name);
+        return companyMapper.companyDtos(companies);
+    }
+
+    public List<CompanyDTO> findByCnpj(String cnpj) {
+        List<Company> companies = companyRepository.findByCnpj(cnpj);
+        return companyMapper.companyDtos(companies);
+    }
 }

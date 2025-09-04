@@ -26,7 +26,7 @@ public class EmployeesRoles {
     @JoinColumn(columnDefinition = "role_id", referencedColumnName = "id")
     private Role role;
     @ManyToOne
-    @JoinColumn(columnDefinition = "company_id", referencedColumnName = "id")
+    @JoinColumn(columnDefinition = "companyId", referencedColumnName = "id")
     private Company company;
 
 }

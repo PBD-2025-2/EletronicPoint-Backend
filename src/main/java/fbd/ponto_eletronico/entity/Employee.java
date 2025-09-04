@@ -12,16 +12,15 @@ import org.springframework.data.jpa.repository.Query;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@JsonIgnoreProperties({"cpf"})
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String cpf;
     @ManyToOne
-    @JoinColumn(columnDefinition = "company_id", referencedColumnName = "id")
+    @JoinColumn(columnDefinition = "companyId", referencedColumnName = "id")
     private Company company;
 
 }

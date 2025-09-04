@@ -9,7 +9,6 @@ import fbd.ponto_eletronico.repository.CompanyRepository;
 import fbd.ponto_eletronico.request.CompanyPostRequest;
 import fbd.ponto_eletronico.request.CompanyPutRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,26 +21,27 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
 
-    public List<CompanyDTO> listAll(){
+    public List<CompanyDTO> findAll(){
         List<Company> companies = companyRepository.findAll();
-        return companyMapper.companyDtos(companies);
+        return companyMapper.toCompanyDtos(companies);
     }
 
     public CompanyDTO findById(Long id){
         Optional<Company> company = companyRepository.findById(id);
-        return company.map(companyMapper :: companyDto)
+        return company.map(companyMapper ::toCompanyDto)
                     .orElseThrow(() ->new BadRequestException("Id Not Found"));
     }
 
     public List<CompanyDTO> findByName(String name) {
         List<Company> companies = companyRepository.findByName(name);
-        return companyMapper.companyDtos(companies);
+        return companyMapper.toCompanyDtos(companies);
     }
 
     public List<CompanyDTO> findByCnpj(String cnpj) {
         List<Company> companies = companyRepository.findByCnpj(cnpj);
-        return companyMapper.companyDtos(companies);
+        return companyMapper.toCompanyDtos(companies);
     }
+
     @Transactional
     public Company save(CompanyPostRequest companyPostRequest){
         Company company = companyMapper.toCompany(companyPostRequest);

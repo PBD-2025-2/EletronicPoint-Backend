@@ -16,6 +16,8 @@ public interface CompanyMapper {
 
     Company toCompany(CompanyPutRequest companyPutRequest);
 
+    List<Company> toCompanies(List<CompanyDTO> companyDTOS);
+
     CompanyDTO toCompanyDto(Company company );
 
     List<CompanyDTO> toCompanyDtos(List<Company> companies);

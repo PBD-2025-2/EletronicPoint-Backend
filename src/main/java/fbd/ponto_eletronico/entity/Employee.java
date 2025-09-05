@@ -19,8 +19,5 @@ public class Employee {
     private Long id;
     private String name;
     private String cpf;
-    @ManyToOne
-    @JoinColumn(columnDefinition = "companyId", referencedColumnName = "id")
-    private Company company;
 
 }

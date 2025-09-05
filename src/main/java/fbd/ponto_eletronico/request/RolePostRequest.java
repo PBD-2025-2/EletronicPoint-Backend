@@ -1,3 +1,6 @@
 package fbd.ponto_eletronico.request;
 
-public record RolePostRequest(String name, Long companyId) {}
+import jakarta.validation.constraints.NotEmpty;
+
+public record RolePostRequest(@NotEmpty(message = "Name not found") String name,
+                              @NotEmpty(message = "Id not found") Long companyId) {}

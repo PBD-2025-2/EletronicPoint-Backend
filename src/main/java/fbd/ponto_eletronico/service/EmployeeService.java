@@ -1,10 +1,8 @@
 package fbd.ponto_eletronico.service;
 
 import fbd.ponto_eletronico.dto.EmployeeDTO;
-import fbd.ponto_eletronico.entity.Company;
 import fbd.ponto_eletronico.entity.Employee;
 import fbd.ponto_eletronico.exception.BadRequestException;
-import fbd.ponto_eletronico.mapper.CompanyMapper;
 import fbd.ponto_eletronico.mapper.EmployeeMapper;
 import fbd.ponto_eletronico.repository.EmployeeRepository;
 import fbd.ponto_eletronico.request.EmployeePostRequest;
@@ -24,8 +22,6 @@ public class EmployeeService {
     private static final Logger log = LogManager.getLogger(EmployeeService.class);
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
-    private final CompanyService companyService;
-    private final CompanyMapper companyMapper;
 
     public List<EmployeeDTO> findAll(){
         List<Employee> employees = employeeRepository.findAll();
@@ -50,18 +46,14 @@ public class EmployeeService {
 
     @Transactional
     public Employee save(EmployeePostRequest employeePostRequest) {
-        Company companyData = companyMapper.toCompany(companyService.findById(employeePostRequest.companyId()));
         Employee employeeData = employeeMapper.toEmployee(employeePostRequest);
-        employeeData.setCompany(companyData);
         return employeeRepository.save(employeeData);
     }
 
     public Employee replace(Long id, EmployeePutRequest employeePutRequest) {
-        Company companyData = companyMapper.toCompany(companyService.findById(employeePutRequest.companyId()));
         Employee employeeData = employeeMapper.toEmployee(findById(id));
         Employee employeeReplace = employeeMapper.toEmployee(employeePutRequest);
         employeeReplace.setId(employeeData.getId());
-        employeeReplace.setCompany(companyData);
         return employeeRepository.save(employeeReplace);
     }
 

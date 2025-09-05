@@ -13,5 +13,4 @@ public class ExceptionDetails {
     protected String details;
     protected String developerMessage;
     protected LocalDateTime timestamp;
-
 }

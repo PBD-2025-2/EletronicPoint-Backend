@@ -11,8 +11,5 @@ import lombok.Data;
 public class EmployeeDTO {
     private Long id;
     private String name;
-    @JsonIgnoreProperties({"id", "cnpj"})
-    private Company company;
-
-
+    private CompanyEmbeddedDTO company;
 }

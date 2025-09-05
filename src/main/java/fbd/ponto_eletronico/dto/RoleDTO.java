@@ -4,10 +4,4 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fbd.ponto_eletronico.entity.Company;
 import lombok.Data;
 
-@Data
-public class RoleDTO {
-    private Long id;
-    private String name;
-    @JsonIgnoreProperties({"id", "cnpj"})
-    private Company company;
-}
+public record RoleDTO (Long id, String name, CompanyEmbeddedDTO company){ }

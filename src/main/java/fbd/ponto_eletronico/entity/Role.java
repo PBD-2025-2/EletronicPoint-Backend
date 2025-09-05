@@ -20,7 +20,7 @@ public class Role {
     private Long id;
     private String name;
     @ManyToOne
-    @JoinColumn(columnDefinition = "company_id", referencedColumnName = "id")
+    @JoinColumn(columnDefinition = "companyId", referencedColumnName = "id")
     private Company company;
 
 

@@ -1,13 +1,18 @@
 package fbd.ponto_eletronico.controller;
 
 import fbd.ponto_eletronico.dto.RoleDTO;
+import fbd.ponto_eletronico.entity.Employee;
+import fbd.ponto_eletronico.entity.Role;
+import fbd.ponto_eletronico.request.EmployeePostRequest;
+import fbd.ponto_eletronico.request.EmployeePutRequest;
+import fbd.ponto_eletronico.request.RolePostRequest;
+import fbd.ponto_eletronico.request.RolePutRequest;
 import fbd.ponto_eletronico.service.RoleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,5 +40,21 @@ public class RoleController {
     @GetMapping(path = "/cnpj/{cnpj}")
     public ResponseEntity<List<RoleDTO>> findByCpf(@PathVariable String cnpj) {
         return  ResponseEntity.ok(roleService.findByCnpj(cnpj));
+    }
+
+    @PostMapping
+    public ResponseEntity<Role> save(@RequestBody @Valid RolePostRequest rolePostRequest) {
+        return  new ResponseEntity<>(roleService.save(rolePostRequest), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "{id}")
+    public ResponseEntity<Role> replace(@RequestBody @PathVariable Long id, @Valid RolePutRequest rolePutRequest){
+        return new ResponseEntity<>(roleService.replace(id, rolePutRequest), HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        roleService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

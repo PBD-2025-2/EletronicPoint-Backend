@@ -2,11 +2,16 @@ package fbd.ponto_eletronico.service;
 
 import fbd.ponto_eletronico.dto.RoleDTO;
 import fbd.ponto_eletronico.entity.Company;
+import fbd.ponto_eletronico.entity.Employee;
 import fbd.ponto_eletronico.entity.Role;
 import fbd.ponto_eletronico.exception.BadRequestException;
 import fbd.ponto_eletronico.mapper.CompanyMapper;
 import fbd.ponto_eletronico.mapper.RoleMapper;
 import fbd.ponto_eletronico.repository.RoleRepository;
+import fbd.ponto_eletronico.request.EmployeePutRequest;
+import fbd.ponto_eletronico.request.RolePostRequest;
+import fbd.ponto_eletronico.request.RolePutRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +46,27 @@ public class RoleService {
         List<Company> companiesData = companyMapper.toCompanies(companyService.findByCnpj(cnpj));
         List<Role> roleData = roleRepository.findByCompany(companiesData.getFirst());
         return roleMapper.toRoleDtos(roleData);
+    }
+
+    @Transactional
+    public Role save(RolePostRequest rolePostRequest) {
+        Company companyData = companyMapper.toCompany(companyService.findById(rolePostRequest.companyId()));
+        Role roleData = roleMapper.toRole(rolePostRequest);
+        roleData.setCompany(companyData);
+        return roleRepository.save(roleData);
+    }
+
+    public Role replace(Long id, RolePutRequest rolePutRequest) {
+        Company companyData = companyMapper.toCompany(companyService.findById(rolePutRequest.companyId()));
+        Role roleData = roleMapper.toRole(findById(id));
+        Role roleReplace = roleMapper.toRole(rolePutRequest);
+        roleReplace.setId(roleData.getId());
+        roleReplace.setCompany(companyData);
+        return roleRepository.save(roleReplace);
+    }
+
+    public void delete(Long id){
+        Role roleData = roleMapper.toRole(findById(id));
+        roleRepository.delete(roleData);
     }
 }

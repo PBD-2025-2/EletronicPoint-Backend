@@ -16,13 +16,10 @@ import lombok.Setter;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @ManyToOne
     @JoinColumn(columnDefinition = "companyId", referencedColumnName = "id")
     private Company company;
-
-
-
 }

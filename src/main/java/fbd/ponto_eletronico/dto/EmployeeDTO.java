@@ -1,5 +1,6 @@
 package fbd.ponto_eletronico.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Id;
 
-public record EmployeeDTO (Long id, String name){}
+public record EmployeeDTO (@Id Long id, String name, @JsonIgnore String cpf){}

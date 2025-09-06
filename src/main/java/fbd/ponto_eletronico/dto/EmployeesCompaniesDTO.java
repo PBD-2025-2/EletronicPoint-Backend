@@ -1,3 +1,6 @@
 package fbd.ponto_eletronico.dto;
 
-public record EmployeesCompaniesDTO(Long id, EmployeeEmbeddedDTO employeeEmbeddedDTO, CompanyEmbeddedDTO companyEmbeddedDTO) {}
+import fbd.ponto_eletronico.entity.Company;
+import fbd.ponto_eletronico.entity.Employee;
+
+public record EmployeesCompaniesDTO(Long id, EmployeeEmbeddedDTO employee, CompanyEmbeddedDTO company) {}

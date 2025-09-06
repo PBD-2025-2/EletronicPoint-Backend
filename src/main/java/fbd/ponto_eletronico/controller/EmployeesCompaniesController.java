@@ -3,8 +3,12 @@ package fbd.ponto_eletronico.controller;
 import fbd.ponto_eletronico.dto.CompanyDTO;
 import fbd.ponto_eletronico.dto.EmployeesCompaniesDTO;
 import fbd.ponto_eletronico.entity.Company;
+import fbd.ponto_eletronico.entity.EmployeesCompanies;
+import fbd.ponto_eletronico.entity.Role;
 import fbd.ponto_eletronico.request.CompanyPostRequest;
 import fbd.ponto_eletronico.request.CompanyPutRequest;
+import fbd.ponto_eletronico.request.EmployeesCompaniesPostRequest;
+import fbd.ponto_eletronico.request.RolePostRequest;
 import fbd.ponto_eletronico.service.CompanyService;
 import fbd.ponto_eletronico.service.EmployeesCompaniesService;
 import jakarta.validation.Valid;
@@ -31,4 +35,24 @@ public class EmployeesCompaniesController {
         return ResponseEntity.ok(employeesCompaniesService.findById(id));
     }
 
+    @GetMapping(path = "/cpf/{cpf}")
+    public ResponseEntity<List<EmployeesCompaniesDTO>>findByEmployee(@PathVariable String cpf){
+        return ResponseEntity.ok(employeesCompaniesService.findByEmployee(cpf));
+    }
+
+    @GetMapping(path = "/cnpj/{cnpj}")
+    public ResponseEntity<List<EmployeesCompaniesDTO>>findByCompany(@PathVariable String cnpj){
+        return ResponseEntity.ok(employeesCompaniesService.findByCompany(cnpj));
+    }
+
+    @PostMapping
+    public ResponseEntity<EmployeesCompanies> save(@RequestBody @Valid EmployeesCompaniesPostRequest employeesCompaniesPostRequest) {
+        return  new ResponseEntity<>(employeesCompaniesService.save(employeesCompaniesPostRequest), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        employeesCompaniesService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

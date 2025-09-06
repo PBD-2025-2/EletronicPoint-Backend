@@ -2,13 +2,11 @@ package fbd.ponto_eletronico.service;
 
 import fbd.ponto_eletronico.dto.RoleDTO;
 import fbd.ponto_eletronico.entity.Company;
-import fbd.ponto_eletronico.entity.Employee;
 import fbd.ponto_eletronico.entity.Role;
 import fbd.ponto_eletronico.exception.BadRequestException;
 import fbd.ponto_eletronico.mapper.CompanyMapper;
 import fbd.ponto_eletronico.mapper.RoleMapper;
 import fbd.ponto_eletronico.repository.RoleRepository;
-import fbd.ponto_eletronico.request.EmployeePutRequest;
 import fbd.ponto_eletronico.request.RolePostRequest;
 import fbd.ponto_eletronico.request.RolePutRequest;
 import jakarta.transaction.Transactional;
@@ -37,12 +35,12 @@ public class RoleService {
                 .orElseThrow(() -> new BadRequestException("Id not Found"));
     }
 
-    public List<RoleDTO> findByName(String name) {
+    public List<RoleDTO> findByEmployee(String name) {
         List<Role> roleData = roleRepository.findByName(name);
         return roleMapper.toRoleDtos(roleData);
     }
 
-    public List<RoleDTO> findByCnpj(String cnpj) {
+    public List<RoleDTO> findByCompany(String cnpj) {
         List<Company> companiesData = companyMapper.toCompanies(companyService.findByCnpj(cnpj));
         List<Role> roleData = roleRepository.findByCompany(companiesData.getFirst());
         return roleMapper.toRoleDtos(roleData);

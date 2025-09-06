@@ -1,10 +1,7 @@
 package fbd.ponto_eletronico.controller;
 
 import fbd.ponto_eletronico.dto.RoleDTO;
-import fbd.ponto_eletronico.entity.Employee;
 import fbd.ponto_eletronico.entity.Role;
-import fbd.ponto_eletronico.request.EmployeePostRequest;
-import fbd.ponto_eletronico.request.EmployeePutRequest;
 import fbd.ponto_eletronico.request.RolePostRequest;
 import fbd.ponto_eletronico.request.RolePutRequest;
 import fbd.ponto_eletronico.service.RoleService;
@@ -33,13 +30,13 @@ public class RoleController {
     }
 
     @GetMapping(path = "/name/{name}")
-    public ResponseEntity<List<RoleDTO>> findByName(@PathVariable String name) {
-        return  ResponseEntity.ok(roleService.findByName(name));
+    public ResponseEntity<List<RoleDTO>> findByEmployeeName(@PathVariable String name) {
+        return  ResponseEntity.ok(roleService.findByEmployee(name));
     }
 
     @GetMapping(path = "/cnpj/{cnpj}")
-    public ResponseEntity<List<RoleDTO>> findByCpf(@PathVariable String cnpj) {
-        return  ResponseEntity.ok(roleService.findByCnpj(cnpj));
+    public ResponseEntity<List<RoleDTO>> findByCompanyName(@PathVariable String cnpj) {
+        return  ResponseEntity.ok(roleService.findByCompany(cnpj));
     }
 
     @PostMapping

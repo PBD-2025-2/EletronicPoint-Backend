@@ -31,8 +31,7 @@ public class RoleService {
 
     public RoleDTO findById(Long id) {
         Optional<Role> roleData = roleRepository.findById(id);
-        return roleData.map(roleMapper :: toRoleDto)
-                .orElseThrow(() -> new BadRequestException("Id not Found"));
+        return roleMapper.toRoleDto(roleData.orElseThrow(() -> new BadRequestException("Id not Found")));
     }
 
     public List<RoleDTO> findByEmployee(String name) {

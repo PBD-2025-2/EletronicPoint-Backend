@@ -24,10 +24,21 @@ public class EmployeesRolesController {
         return ResponseEntity.ok(employeesRolesService.listAll());
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "id/{id}")
     public ResponseEntity<EmployeesRolesDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(employeesRolesService.findById(id));
     }
+
+    @GetMapping(path = "cpf/{cpf}")
+    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployee(@PathVariable String cpf){
+        return ResponseEntity.ok(employeesRolesService.findByEmployee(cpf));
+    }
+
+    @GetMapping(path = "cpf/{cpf}/roleName/{roleName}")
+    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeRole(@PathVariable String cpf, @PathVariable String roleName){
+        return ResponseEntity.ok(employeesRolesService.findByEmployeeRole(cpf, roleName));
+    }
+
 
     @PostMapping
     public ResponseEntity<EmployeesRoles> save(@RequestBody @Valid EmployeesRolesPostRequest employeesRolesPostRequest){

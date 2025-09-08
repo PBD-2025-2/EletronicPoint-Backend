@@ -34,8 +34,8 @@ public class EmployeesCompaniesService {
 
     public EmployeesCompaniesDTO findById(Long id) {
         Optional<EmployeesCompanies> employeesCompaniesData = employeesCompaniesRepository.findById(id);
-        return employeesCompaniesData.map(employeesCompaniesMapper :: toEmployeesCompaniesDto)
-                .orElseThrow(() -> new BadRequestException("Id not Found"));
+        return employeesCompaniesMapper.toEmployeesCompaniesDto(employeesCompaniesData
+                .orElseThrow(() -> new BadRequestException("Id not Found")));
     }
 
     public List<EmployeesCompaniesDTO> findByEmployee(String cpf) {

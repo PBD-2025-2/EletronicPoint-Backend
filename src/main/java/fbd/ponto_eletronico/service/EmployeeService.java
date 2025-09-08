@@ -30,8 +30,8 @@ public class EmployeeService {
 
     public EmployeeDTO findById(Long id) {
         Optional<Employee> employeeData = employeeRepository.findById(id);
-        return employeeData.map(employeeMapper ::toEmployeeDto)
-                .orElseThrow(() -> new BadRequestException("Id not Found"));
+        return employeeMapper.toEmployeeDto(employeeData
+                .orElseThrow(() -> new BadRequestException("Id not Found")));
     }
 
     public List<EmployeeDTO> findByName(String name) {

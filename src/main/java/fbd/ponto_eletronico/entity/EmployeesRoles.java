@@ -22,15 +22,9 @@ public class EmployeesRoles {
     private Integer work_regime;
     @ManyToOne
     @JoinColumn(columnDefinition = "employee_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"cpf"})
     private Employee employee;
     @ManyToOne
     @JoinColumn(columnDefinition = "role_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"company"})
     private Role role;
-    @ManyToOne
-    @JoinColumn(columnDefinition = "companyId", referencedColumnName = "id")
-    @JsonIgnoreProperties({"id", "cnpj"})
-    private Company company;
 
 }

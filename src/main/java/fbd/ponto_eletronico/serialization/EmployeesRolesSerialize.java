@@ -15,7 +15,7 @@ public class EmployeesRolesSerialize extends JsonSerializer<EmployeesRoles> {
         jsonGenerator.writeNumberField("work_regime", employeesRoles.getWork_regime());
         jsonGenerator.writeStringField("employee_name", employeesRoles.getEmployee().getName());
         jsonGenerator.writeStringField("role_name", employeesRoles.getRole().getName());
-        jsonGenerator.writeStringField("company_name", employeesRoles.getCompany().getName());
+
 
         jsonGenerator.writeEndObject();
     }

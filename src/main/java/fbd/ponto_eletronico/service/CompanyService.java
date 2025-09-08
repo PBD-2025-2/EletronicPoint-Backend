@@ -28,8 +28,8 @@ public class CompanyService {
 
     public CompanyDTO findById(Long id){
         Optional<Company> company = companyRepository.findById(id);
-        return company.map(companyMapper ::toCompanyDto)
-                    .orElseThrow(() ->new BadRequestException("Id Not Found"));
+        return companyMapper.toCompanyDto(company
+                    .orElseThrow(() ->new BadRequestException("Id Not Found")));
     }
 
     public List<CompanyDTO> findByName(String name) {

@@ -1,8 +1,6 @@
 package fbd.ponto_eletronico.service;
 
-import fbd.ponto_eletronico.dto.EmployeeDTO;
 import fbd.ponto_eletronico.dto.EmployeesRolesDTO;
-import fbd.ponto_eletronico.entity.Company;
 import fbd.ponto_eletronico.entity.Employee;
 import fbd.ponto_eletronico.entity.EmployeesRoles;
 import fbd.ponto_eletronico.entity.Role;
@@ -14,13 +12,13 @@ import fbd.ponto_eletronico.mapper.RolesEmployeesMapper;
 import fbd.ponto_eletronico.repository.EmployeesRolesRepository;
 import fbd.ponto_eletronico.repository.RoleRepository;
 import fbd.ponto_eletronico.request.EmployeesRolesPostRequest;
+import fbd.ponto_eletronico.request.EmployeesRolesPutRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -64,12 +62,29 @@ public class EmployeesRolesService {
 
     @Transactional
     public EmployeesRoles save(EmployeesRolesPostRequest employeesRolesPostRequest){
-        Role roleData = roleMapper.toRole(roleService.findById(employeesRolesPostRequest.roleId()));
         Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeesRolesPostRequest.employeeId()));
+        if(employeesRolesPostRequest.status()){
+            List<EmployeesRolesDTO> AllRolesEmployee = findByEmployee(employeeData.getCpf());
+            List<EmployeesRolesDTO> rolesActiveEmployee = AllRolesEmployee.stream().filter(EmployeesRolesDTO::status).toList();
+            if(rolesActiveEmployee.size() >= 2){
+                throw new BadRequestException("employee has two active positions, cannot perform another function");
+            }
+        }
+        Role roleData = roleMapper.toRole(roleService.findById(employeesRolesPostRequest.roleId()));
         EmployeesRoles employeesRolesData = rolesEmployeesMapper.toEmployeesRoles(employeesRolesPostRequest);
         employeesRolesData.setRole(roleData);
         employeesRolesData.setEmployee(employeeData);
         return employeesRolesRepository.save(employeesRolesData);
+    }
+
+    public EmployeesRoles replace(Long id, EmployeesRolesPutRequest employeeRolesPutRequest){
+        EmployeesRoles employeesRoles = rolesEmployeesMapper.toEmployeesRoles(findById(id));
+        Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeeRolesPutRequest.employeeId()));
+        EmployeesRoles employeesRolesReplace = rolesEmployeesMapper.employeesRolesPut(employeeRolesPutRequest);
+        employeesRolesReplace.setId(employeesRoles.getId());
+        employeesRolesReplace.setEmployee(employeeData);
+        employeesRolesReplace.setRole(employeesRoles.getRole());
+        return employeesRolesRepository.save(employeesRolesReplace);
     }
 
     public void delete(Long id){

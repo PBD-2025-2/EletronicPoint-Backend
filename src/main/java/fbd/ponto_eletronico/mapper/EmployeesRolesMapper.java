@@ -10,13 +10,13 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface EmployeesRolesMapper {
-    List<EmployeesRolesDTO> employeesRolesDtos(List<EmployeesRoles> employeesRoles);
+    List<EmployeesRolesDTO> toEmployeesRolesDtos(List<EmployeesRoles> employeesRoles);
 
     List<EmployeesRoles> toEmployeesRoles(List<EmployeesRolesDTO> employeesRolesDtos);
 
-    EmployeesRolesDTO employeeRolesDto(EmployeesRoles employeesRoles);
+    EmployeesRolesDTO toEmployeeRolesDto(EmployeesRoles employeesRoles);
 
-    EmployeesRoles employeesRolesPut(EmployeesRolesPutRequest employeesRolesPutRequest);
+    EmployeesRoles toEmployeesRolesPut(EmployeesRolesPutRequest employeesRolesPutRequest);
 
     EmployeesRoles toEmployeesRoles(EmployeesRolesDTO employeesRolesDTO);
 

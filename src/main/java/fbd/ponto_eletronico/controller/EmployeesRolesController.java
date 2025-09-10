@@ -3,6 +3,7 @@ package fbd.ponto_eletronico.controller;
 import fbd.ponto_eletronico.dto.EmployeesRolesDTO;
 import fbd.ponto_eletronico.entity.EmployeesRoles;
 import fbd.ponto_eletronico.request.EmployeesRolesPostRequest;
+import fbd.ponto_eletronico.request.EmployeesRolesPutRequest;
 import fbd.ponto_eletronico.service.EmployeesRolesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,10 +40,14 @@ public class EmployeesRolesController {
         return ResponseEntity.ok(employeesRolesService.findByEmployeeRole(cpf, roleName));
     }
 
-
     @PostMapping
     public ResponseEntity<EmployeesRoles> save(@RequestBody @Valid EmployeesRolesPostRequest employeesRolesPostRequest){
         return new ResponseEntity<>(employeesRolesService.save(employeesRolesPostRequest), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/id{id}")
+    public ResponseEntity<EmployeesRoles> replace(@RequestBody @Valid @PathVariable Long id, EmployeesRolesPutRequest employeesRolesPutRequest){
+        return new ResponseEntity<>(employeesRolesService.replace(id, employeesRolesPutRequest), HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping(path = "/{id}")

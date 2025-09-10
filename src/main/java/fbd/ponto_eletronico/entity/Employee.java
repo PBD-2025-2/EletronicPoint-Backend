@@ -1,9 +1,7 @@
 package fbd.ponto_eletronico.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.repository.Query;
 
 @Entity
 @Table(name = "employees")

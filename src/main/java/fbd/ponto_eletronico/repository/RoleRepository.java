@@ -9,4 +9,5 @@ import java.util.List;
 public interface RoleRepository extends JpaRepository<Role, Long> {
     List<Role> findByName(String name);
     List<Role> findByCompany(Company  company);
+    Boolean existsRoleByNameAndCompany(String name, Company company);
 }

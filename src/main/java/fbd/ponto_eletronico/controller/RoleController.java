@@ -31,12 +31,17 @@ public class RoleController {
 
     @GetMapping(path = "/name/{name}")
     public ResponseEntity<List<RoleDTO>> findByEmployeeName(@PathVariable String name) {
-        return  ResponseEntity.ok(roleService.findByEmployee(name));
+        return  ResponseEntity.ok(roleService.findByName(name));
     }
 
     @GetMapping(path = "/cnpj/{cnpj}")
     public ResponseEntity<List<RoleDTO>> findByCompanyName(@PathVariable String cnpj) {
         return  ResponseEntity.ok(roleService.findByCompany(cnpj));
+    }
+
+    @GetMapping(path = "/rolename/{name}/cnpj/{cnpj}")
+    public ResponseEntity<List<RoleDTO>> findByRoleNameAndCnpj(@PathVariable String name, @PathVariable String cnpj){
+        return ResponseEntity.ok(roleService.findByRoleNameAndCnpj(name, cnpj));
     }
 
     @PostMapping

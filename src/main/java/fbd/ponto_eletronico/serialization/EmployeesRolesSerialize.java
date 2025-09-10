@@ -12,7 +12,7 @@ public class EmployeesRolesSerialize extends JsonSerializer<EmployeesRoles> {
     public void serialize(EmployeesRoles employeesRoles, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeBooleanField("status", employeesRoles.getStatus());
-        jsonGenerator.writeNumberField("work_regime", employeesRoles.getWork_regime());
+        jsonGenerator.writeNumberField("workRegime", employeesRoles.getWorkRegime());
         jsonGenerator.writeStringField("employee_name", employeesRoles.getEmployee().getName());
         jsonGenerator.writeStringField("role_name", employeesRoles.getRole().getName());
 

@@ -19,7 +19,7 @@ public class EmployeesRoles {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Boolean status;
-    private Integer work_regime;
+    private Integer workRegime;
     @ManyToOne
     @JoinColumn(columnDefinition = "employee_id", referencedColumnName = "id")
     private Employee employee;

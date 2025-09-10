@@ -34,7 +34,7 @@ public class RoleService {
         return roleMapper.toRoleDto(roleData.orElseThrow(() -> new BadRequestException("Id not Found")));
     }
 
-    public List<RoleDTO> findByEmployee(String name) {
+    public List<RoleDTO> findByName(String name) {
         List<Role> roleData = roleRepository.findByName(name);
         return roleMapper.toRoleDtos(roleData);
     }
@@ -45,9 +45,23 @@ public class RoleService {
         return roleMapper.toRoleDtos(roleData);
     }
 
+    public List<RoleDTO> findByRoleNameAndCnpj(String name, String cnpj){
+        List<RoleDTO> rolesData = findByName(name);
+        List<RoleDTO> filterByCnpj = rolesData.stream().filter(
+                roleCNPJs -> roleCNPJs.company().cnpj().equalsIgnoreCase(cnpj)).toList();
+        if(filterByCnpj.isEmpty()){
+            throw new BadRequestException("This role not exists in this company");
+        }
+        return filterByCnpj;
+
+    }
+
     @Transactional
     public Role save(RolePostRequest rolePostRequest) {
         Company companyData = companyMapper.toCompany(companyService.findById(rolePostRequest.companyId()));
+        if(roleRepository.existsRoleByNameAndCompany(rolePostRequest.name(), companyData)){
+            throw new BadRequestException("This role exists in this company");
+        }
         Role roleData = roleMapper.toRole(rolePostRequest);
         roleData.setCompany(companyData);
         return roleRepository.save(roleData);

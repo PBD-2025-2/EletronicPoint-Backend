@@ -36,19 +36,19 @@ public class EmployeesRolesService {
 
     public List<EmployeesRolesDTO> listAll() {
         List<EmployeesRoles> employeesRoles = employeesRolesRepository.findAll();
-        return employeesRolesMapper.employeesRolesDtos(employeesRoles);
+        return employeesRolesMapper.toEmployeesRolesDtos(employeesRoles);
     }
 
     public EmployeesRolesDTO findById(Long id){
         Optional<EmployeesRoles> employeesRolesData = employeesRolesRepository.findById(id);
-        return employeesRolesMapper.employeeRolesDto(employeesRolesData.
+        return employeesRolesMapper.toEmployeeRolesDto(employeesRolesData.
                 orElseThrow(() -> new BadRequestException("Id Not Found")));
     }
 
     public List<EmployeesRolesDTO> findByEmployee(String cpf){
         List<Employee> employeesData = employeeMapper.toEmployees(employeeService.findByCpf(cpf));
         List<EmployeesRoles> employeesRolesData = employeesRolesRepository.findByEmployee(employeesData.getFirst());
-        return employeesRolesMapper.employeesRolesDtos(employeesRolesData);
+        return employeesRolesMapper.toEmployeesRolesDtos(employeesRolesData);
     }
 
     public List<EmployeesRolesDTO> findByEmployeeRole(String cpf, String roleName){
@@ -57,7 +57,7 @@ public class EmployeesRolesService {
                         .filter(employeesRoles -> employeesRoles.
                                 getRole().getName().equalsIgnoreCase(roleName)).toList();
 
-        return employeesRolesMapper.employeesRolesDtos(filterRolesName);
+        return employeesRolesMapper.toEmployeesRolesDtos(filterRolesName);
 
     }
 
@@ -85,7 +85,7 @@ public class EmployeesRolesService {
     public EmployeesRoles replace(Long id, EmployeesRolesPutRequest employeeRolesPutRequest){
         EmployeesRoles employeesRoles = employeesRolesMapper.toEmployeesRoles(findById(id));
         Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeeRolesPutRequest.employeeId()));
-        EmployeesRoles employeesRolesReplace = employeesRolesMapper.employeesRolesPut(employeeRolesPutRequest);
+        EmployeesRoles employeesRolesReplace = employeesRolesMapper.toEmployeesRolesPut(employeeRolesPutRequest);
         employeesRolesReplace.setId(employeesRoles.getId());
         employeesRolesReplace.setEmployee(employeeData);
         employeesRolesReplace.setRole(employeesRoles.getRole());

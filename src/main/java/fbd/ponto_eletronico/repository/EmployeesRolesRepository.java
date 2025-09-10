@@ -10,5 +10,5 @@ import java.util.List;
 public interface EmployeesRolesRepository extends JpaRepository<EmployeesRoles, Long> {
 
     List<EmployeesRoles> findByEmployee(Employee employee);
-
+    Boolean existsByWorkRegimeAndEmployeeAndRole(int workRegime, Employee employee, Role role);
 }

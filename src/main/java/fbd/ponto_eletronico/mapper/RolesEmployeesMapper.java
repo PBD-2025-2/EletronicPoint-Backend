@@ -4,6 +4,7 @@ import fbd.ponto_eletronico.dto.EmployeesRolesDTO;
 import fbd.ponto_eletronico.entity.EmployeesRoles;
 import fbd.ponto_eletronico.entity.Role;
 import fbd.ponto_eletronico.request.EmployeesRolesPostRequest;
+import fbd.ponto_eletronico.request.EmployeesRolesPutRequest;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -14,9 +15,11 @@ public interface RolesEmployeesMapper {
 
     List<EmployeesRoles> toEmployeesRoles(List<EmployeesRolesDTO> employeesRolesDtos);
 
-    List<Role> toRoles(List<EmployeesRoles> employeesRoles);
+//    List<Role> toRoles(List<EmployeesRoles> employeesRoles);
 
     EmployeesRolesDTO employeeRolesDto(EmployeesRoles employeesRoles);
+
+    EmployeesRoles employeesRolesPut(EmployeesRolesPutRequest employeesRolesPutRequest);
 
     EmployeesRoles toEmployeesRoles(EmployeesRolesDTO employeesRolesDTO);
 

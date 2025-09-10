@@ -59,9 +59,11 @@ public class RoleService {
     @Transactional
     public Role save(RolePostRequest rolePostRequest) {
         Company companyData = companyMapper.toCompany(companyService.findById(rolePostRequest.companyId()));
-        if(roleRepository.existsRoleByNameAndCompany(rolePostRequest.name(), companyData)){
+
+        if(existRole(rolePostRequest.name(), companyData)){
             throw new BadRequestException("This role exists in this company");
         }
+
         Role roleData = roleMapper.toRole(rolePostRequest);
         roleData.setCompany(companyData);
         return roleRepository.save(roleData);
@@ -79,5 +81,9 @@ public class RoleService {
     public void delete(Long id){
         Role roleData = roleMapper.toRole(findById(id));
         roleRepository.delete(roleData);
+    }
+
+    private boolean existRole(String name, Company company) {
+        return roleRepository.existsRoleByNameAndCompany(name, company);
     }
 }

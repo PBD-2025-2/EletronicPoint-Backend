@@ -1,16 +1,16 @@
 package fbd.ponto_eletronico.controller;
 
 import fbd.ponto_eletronico.dto.EletronicPointsDTO;
+import fbd.ponto_eletronico.entity.EletronicPoints;
 import fbd.ponto_eletronico.service.EletronicPointsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/eletronicPoints")
@@ -48,4 +48,9 @@ public class EletronicPointsController {
     public ResponseEntity<List<EletronicPointsDTO>> findByStartDateAndEndDate(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
         return ResponseEntity.ok(eletronicPointsService.findByStartDateAndEndDate(startDate, endDate));
     }
+    @PostMapping(path = "/id/{employeesRolesId}")
+    public ResponseEntity<EletronicPoints> register(@RequestBody @PathVariable Long employeesRolesId) {
+        return new ResponseEntity<>(eletronicPointsService.register(employeesRolesId), HttpStatus.CREATED);
+    }
+
 }

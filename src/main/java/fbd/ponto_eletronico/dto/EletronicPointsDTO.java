@@ -6,18 +6,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.Id;
 import serialize.StatusSerialize;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record EletronicPointsDTO(
         @Id
         Long id,
         LocalDate startDate,
-        Time register_1,
-        Time register_2,
-        Time register_3,
-        Time register_4,
+        LocalTime register_1,
+        LocalTime register_2,
+        LocalTime register_3,
+        LocalTime register_4,
         LocalDate endDate,
 
         @JsonSerialize(using = StatusSerialize.class)

@@ -2,6 +2,7 @@ package fbd.ponto_eletronico.controller;
 
 import fbd.ponto_eletronico.dto.EletronicPointsDTO;
 import fbd.ponto_eletronico.entity.EletronicPoints;
+import fbd.ponto_eletronico.request.EletronicPointsPutRequest;
 import fbd.ponto_eletronico.service.EletronicPointsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,8 +50,12 @@ public class EletronicPointsController {
         return ResponseEntity.ok(eletronicPointsService.findByStartDateAndEndDate(startDate, endDate));
     }
     @PostMapping(path = "/id/{employeesRolesId}")
-    public ResponseEntity<EletronicPoints> register(@RequestBody @PathVariable Long employeesRolesId) {
+    public ResponseEntity<EletronicPointsDTO> register(@RequestBody @PathVariable Long employeesRolesId) {
         return new ResponseEntity<>(eletronicPointsService.register(employeesRolesId), HttpStatus.CREATED);
+    }
+    @PutMapping(path = "/id/{eletronicPointsId}")
+    public ResponseEntity<EletronicPointsDTO> replace (@RequestBody @PathVariable Long eletronicPointsId, @RequestBody EletronicPointsPutRequest eletronicPointsPutRequest){
+        return new ResponseEntity<>(eletronicPointsService.replace(eletronicPointsId, eletronicPointsPutRequest), HttpStatus.NO_CONTENT);
     }
 
 }

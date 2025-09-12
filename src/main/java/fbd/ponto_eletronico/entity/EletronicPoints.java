@@ -18,7 +18,7 @@ import java.time.LocalTime;
 public class EletronicPoints {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate startDate;
     private LocalTime register_1;

@@ -5,6 +5,7 @@ import fbd.ponto_eletronico.dto.EmployeesRolesDTO;
 import fbd.ponto_eletronico.entity.EletronicPoints;
 import fbd.ponto_eletronico.entity.EmployeesRoles;
 import fbd.ponto_eletronico.request.EletronicPointsPostRequest;
+import fbd.ponto_eletronico.request.EletronicPointsPutRequest;
 import fbd.ponto_eletronico.request.EmployeesRolesPostRequest;
 import fbd.ponto_eletronico.request.EmployeesRolesPutRequest;
 import org.mapstruct.Mapper;
@@ -22,5 +23,8 @@ public interface EletronicPointsMapper {
     EletronicPoints toEletronicPoints(EletronicPointsDTO eletronicPointsDTO);
 
     EletronicPoints toEletronicPoints(EletronicPointsPostRequest eletronicPointsPostRequest);
+
+    EletronicPoints eletronicPointsPutRequestToEletronicPoints(EletronicPointsPutRequest eletronicPointsPutRequest);
+
 }
 

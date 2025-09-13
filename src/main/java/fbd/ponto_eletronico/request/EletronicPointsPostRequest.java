@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record EletronicPointsPostRequest(
-        EmployeesRoles employeesRoles,
+        Long employeesRolesId,
         LocalDate startDate,
         LocalTime register_1,
         Integer status) {}

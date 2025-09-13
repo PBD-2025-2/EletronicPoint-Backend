@@ -45,7 +45,7 @@ public class CompanyController {
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<Company> replace(@RequestBody @PathVariable Long id, @Valid CompanyPutRequest companyPutRequest){
+    public ResponseEntity<Company> replace(@PathVariable Long id, @RequestBody @Valid CompanyPutRequest companyPutRequest){
         return new ResponseEntity<>(companyService.replace(id, companyPutRequest), HttpStatus.NO_CONTENT);
     }
 

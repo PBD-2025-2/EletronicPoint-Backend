@@ -50,7 +50,7 @@ public class RoleController {
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<Role> replace(@RequestBody @PathVariable Long id, @Valid RolePutRequest rolePutRequest){
+    public ResponseEntity<Role> replace(@PathVariable Long id, @RequestBody @Valid RolePutRequest rolePutRequest){
         return new ResponseEntity<>(roleService.replace(id, rolePutRequest), HttpStatus.NO_CONTENT);
     }
 

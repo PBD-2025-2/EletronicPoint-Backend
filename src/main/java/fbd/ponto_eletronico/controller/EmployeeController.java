@@ -47,7 +47,7 @@ public class EmployeeController {
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<Employee> replace(@RequestBody @PathVariable Long id, @Valid EmployeePutRequest employeePutRequest){
+    public ResponseEntity<Employee> replace(@PathVariable Long id,@RequestBody @Valid EmployeePutRequest employeePutRequest){
         return new ResponseEntity<>(employeeService.replace(id, employeePutRequest), HttpStatus.NO_CONTENT);
     }
 

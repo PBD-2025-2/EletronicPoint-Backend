@@ -15,12 +15,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Timer;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -85,19 +83,13 @@ public class EletronicPointsService {
     }
 
     public EletronicPointsDTO register(Long employeeRolesId){
-        List<EletronicPoints> eletronicPointsListByEmployeesRoles = eletronicPointsRepository.findByEmployeesRoles_Id(employeeRolesId);
-        if(eletronicPointsListByEmployeesRoles.isEmpty()) {
-            return registerNewEletronicPoint(employeeRolesId);
-        }
-        EletronicPoints eletronicPoints = eletronicPointsRepository.findByEmployeesRoles_Id(employeeRolesId).getLast();
-        List<LocalTime> registers = Arrays.asList(eletronicPoints.getRegister_2(), eletronicPoints.getRegister_3(), eletronicPoints.getRegister_4());
-        if(registers.get(0) == null){
-            eletronicPoints.setRegister_2(LocalTime.now());
-        }else if(registers.get(1) == null){
-            eletronicPoints.setRegister_4(LocalTime.now());
+        EletronicPoints eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Id(employeeRolesId).getLast();
+
+        if(eletronicPointsData != null) {
+//           Registrar ponto já existente
         }
 
-        return eletronicPointsMapper.toEletronicPointsDto(eletronicPoints);
+        return registerNewEletronicPoint(employeeRolesId);
     }
 
     public EletronicPointsDTO replace(Long eletronicPointsId, EletronicPointsPutRequest eletronicPointsPutRequest){
@@ -110,22 +102,38 @@ public class EletronicPointsService {
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsRepository.save(eletronicPointsReplaceDate));
     }
 
-
     private EletronicPointsDTO registerNewEletronicPoint(Long employeeRolesId){
         EmployeesRoles employeesRolesData = employeesRolesMapper.toEmployeesRoles(employeesRolesService.findById(employeeRolesId));
         LocalDate dateNow = LocalDate.now();
         LocalTime timeNow = LocalTime.now();
-        EletronicPointsPostRequest eletronicPointsPostRequestData = new EletronicPointsPostRequest(employeesRolesData, dateNow, timeNow, 1);
+
+        EletronicPointsPostRequest eletronicPointsPostRequestData = new EletronicPointsPostRequest(
+                employeeRolesId,
+                dateNow,
+                timeNow,
+                1
+        );
+
         EletronicPoints firstEletronicPoint = eletronicPointsMapper.toEletronicPoints(eletronicPointsPostRequestData);
+        firstEletronicPoint.setEmployeesRoles(employeesRolesData);
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsRepository.save(firstEletronicPoint));
     }
 
-//    List<LocalTime> registers = Arrays.asList(eletronicPoints.getRegister_2(), eletronicPoints.getRegister_3(), eletronicPoints.getRegister_4());
-//        if(registers.get(0) == null){
-//        eletronicPoints.setRegister_2(LocalTime.now());
-//    }else if(registers.get(1) == null){
-//        eletronicPoints.setRegister_4(LocalTime.now());
+//    private registerExistingEletronicPoint(EletronicPoints eletronicPoints) {
+//        LocalDate dateNow = LocalDate.now();
+//        LocalTime timeNow = LocalTime.now();
+//        List<LocalTime> oldRegistersCurrent = findCurrentRegisterPoints(eletronicPoints);
+//
+//        // Verificar se todos os elementos da lista são nulos se não for achar o próximo nulo para ver onde registrar
 //    }
 
+    private List<LocalTime> findCurrentRegisterPoints(EletronicPoints eletronicPoints) {
+        List<LocalTime> currentRegisterPoints = new ArrayList<>();
+        currentRegisterPoints.add(eletronicPoints.getRegister_1());
+        currentRegisterPoints.add(eletronicPoints.getRegister_2());
+        currentRegisterPoints.add(eletronicPoints.getRegister_3());
+        currentRegisterPoints.add(eletronicPoints.getRegister_4());
 
+        return currentRegisterPoints;
+    }
 }

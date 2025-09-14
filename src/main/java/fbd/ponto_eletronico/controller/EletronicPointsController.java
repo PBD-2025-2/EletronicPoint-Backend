@@ -50,7 +50,7 @@ public class EletronicPointsController {
         return ResponseEntity.ok(eletronicPointsService.findByStartDateAndEndDate(startDate, endDate));
     }
     @PostMapping(path = "/id/{employeesRolesId}")
-    public ResponseEntity<EletronicPointsDTO> register(@RequestBody @PathVariable Long employeesRolesId) {
+    public ResponseEntity<EletronicPointsDTO> register(@PathVariable Long employeesRolesId) {
         return new ResponseEntity<>(eletronicPointsService.register(employeesRolesId), HttpStatus.CREATED);
     }
     @PutMapping(path = "/id/{eletronicPointsId}")

@@ -25,6 +25,7 @@ public interface EletronicPointsMapper {
     EletronicPoints toEletronicPoints(EletronicPointsPostRequest eletronicPointsPostRequest);
 
     EletronicPoints eletronicPointsPutRequestToEletronicPoints(EletronicPointsPutRequest eletronicPointsPutRequest);
+    EletronicPointsPutRequest eletronicPointsToEletronicPointsPutRequest(EletronicPoints eletronicPoints);
 
 }
 

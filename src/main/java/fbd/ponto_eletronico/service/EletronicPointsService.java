@@ -1,7 +1,6 @@
 package fbd.ponto_eletronico.service;
 
 import fbd.ponto_eletronico.dto.EletronicPointsDTO;
-import fbd.ponto_eletronico.dto.EmployeesRolesDTO;
 import fbd.ponto_eletronico.entity.EletronicPoints;
 import fbd.ponto_eletronico.entity.EmployeesRoles;
 import fbd.ponto_eletronico.exception.BadRequestException;
@@ -15,8 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -86,7 +86,7 @@ public class EletronicPointsService {
         EletronicPoints eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Id(employeeRolesId).getLast();
 
         if(eletronicPointsData != null) {
-//           Registrar ponto já existente
+            return registerExistingEletronicPoint(eletronicPointsData);
         }
 
         return registerNewEletronicPoint(employeeRolesId);
@@ -107,25 +107,39 @@ public class EletronicPointsService {
         LocalDate dateNow = LocalDate.now();
         LocalTime timeNow = LocalTime.now();
 
-        EletronicPointsPostRequest eletronicPointsPostRequestData = new EletronicPointsPostRequest(
-                employeeRolesId,
-                dateNow,
-                timeNow,
-                1
-        );
+        EletronicPointsPostRequest eletronicPointsPostRequestData = new EletronicPointsPostRequest(employeeRolesId, dateNow, timeNow, 1);
 
         EletronicPoints firstEletronicPoint = eletronicPointsMapper.toEletronicPoints(eletronicPointsPostRequestData);
         firstEletronicPoint.setEmployeesRoles(employeesRolesData);
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsRepository.save(firstEletronicPoint));
     }
 
-//    private registerExistingEletronicPoint(EletronicPoints eletronicPoints) {
-//        LocalDate dateNow = LocalDate.now();
-//        LocalTime timeNow = LocalTime.now();
-//        List<LocalTime> oldRegistersCurrent = findCurrentRegisterPoints(eletronicPoints);
-//
-//        // Verificar se todos os elementos da lista são nulos se não for achar o próximo nulo para ver onde registrar
-//    }
+    private EletronicPointsDTO registerExistingEletronicPoint(EletronicPoints eletronicPoints) {
+        LocalDate dateNow = LocalDate.now();
+        LocalTime timeNow = LocalTime.now();
+        List<LocalTime> oldRegistersCurrent = findCurrentRegisterPoints(eletronicPoints);
+
+        if (oldRegistersCurrent.stream().allMatch(Objects::nonNull)) {
+            closeRegister(eletronicPoints);
+            replace(eletronicPoints.getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
+        }
+
+        if (isPending(eletronicPoints)) {
+            return applyPedingStatus(eletronicPoints);
+        }
+
+        int workRegime = eletronicPoints.getEmployeesRoles().getWorkRegime();
+        if (workRegime == 1 || workRegime == 4) {
+            registerStandardAndStraightShiftRegime(eletronicPoints, oldRegistersCurrent);
+        }
+
+        if (workRegime == 2 || workRegime == 3) {
+            register24HoursAnd12HoursRegime(eletronicPoints, oldRegistersCurrent);
+        }
+
+        return replace(eletronicPoints.getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
+
+    }
 
     private List<LocalTime> findCurrentRegisterPoints(EletronicPoints eletronicPoints) {
         List<LocalTime> currentRegisterPoints = new ArrayList<>();
@@ -135,5 +149,80 @@ public class EletronicPointsService {
         currentRegisterPoints.add(eletronicPoints.getRegister_4());
 
         return currentRegisterPoints;
+    }
+
+    private void closeRegister(EletronicPoints eletronicPoints) {
+        eletronicPoints.setEndDate(LocalDate.now());
+        eletronicPoints.setStatus(2);
+    }
+
+    private boolean isPending(EletronicPoints eletronicPoints) {
+        int workRegime = eletronicPoints.getEmployeesRoles().getWorkRegime();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDateAndFirstRegister = LocalDateTime.of(eletronicPoints.getStartDate(), eletronicPoints.getRegister_1());
+        long durationBetweenDates = Duration.between(startDateAndFirstRegister, now).toHours();
+
+        if (now.toLocalDate().isAfter(eletronicPoints.getStartDate()) && (workRegime == 1 || workRegime == 4)) {
+            return true;
+        }
+
+        if (workRegime == 2 && durationBetweenDates < 12) {
+            return true;
+        }
+
+        if (workRegime == 3 && durationBetweenDates < 24) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private EletronicPointsDTO applyPedingStatus(EletronicPoints eletronicPoints) {
+        switch (eletronicPoints.getEmployeesRoles().getWorkRegime()) {
+            case 1, 4 -> eletronicPoints.setStatus(3);
+
+            case 2, 3 -> {
+                eletronicPoints.setStatus(3);
+                eletronicPoints.setRegister_2(LocalTime.now());
+            }
+        }
+
+        eletronicPoints.setEndDate(LocalDate.now());
+        return replace(eletronicPoints.getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
+    }
+
+    private void registerStandardAndStraightShiftRegime(EletronicPoints eletronicPoints, List<LocalTime> actualRegisters) {
+        LocalTime now = LocalTime.now();
+
+        if (actualRegisters.getFirst() == null) {
+            eletronicPoints.setRegister_1(now);
+        }
+
+        if (actualRegisters.get(1) == null) {
+            eletronicPoints.setRegister_2(now);
+        }
+
+        if (actualRegisters.get(2) == null) {
+            eletronicPoints.setRegister_3(now);
+        }
+
+        if (actualRegisters.get(3) == null) {
+            eletronicPoints.setRegister_4(now);
+            closeRegister(eletronicPoints);
+        }
+    }
+
+    private void register24HoursAnd12HoursRegime(EletronicPoints eletronicPoints, List<LocalTime> actualRegisters) {
+        LocalTime now = LocalTime.now();
+
+        if (actualRegisters.getFirst() == null) {
+            eletronicPoints.setRegister_1(now);
+        }
+
+        if (actualRegisters.get(1) == null) {
+            eletronicPoints.setRegister_2(now);
+            closeRegister(eletronicPoints);
+        }
+
     }
 }

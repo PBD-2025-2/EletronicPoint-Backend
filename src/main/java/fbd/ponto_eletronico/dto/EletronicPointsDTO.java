@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.Id;
-import serialize.StatusSerialize;
+import fbd.ponto_eletronico.serialize.StatusSerialize;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

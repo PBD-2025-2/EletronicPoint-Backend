@@ -54,8 +54,8 @@ public class EletronicPointsController {
         return new ResponseEntity<>(eletronicPointsService.register(employeesRolesId), HttpStatus.CREATED);
     }
     @PutMapping(path = "/id/{eletronicPointsId}")
-    public ResponseEntity<EletronicPointsDTO> replace (@PathVariable Long eletronicPointsId, @RequestBody EletronicPointsPutRequest eletronicPointsPutRequest){
-        return new ResponseEntity<>(eletronicPointsService.replace(eletronicPointsId, eletronicPointsPutRequest), HttpStatus.NO_CONTENT);
+    public ResponseEntity<EletronicPointsDTO> replace (@PathVariable Long eletronicPointsId,@RequestBody Long employeesRolesId, @RequestBody EletronicPointsPutRequest eletronicPointsPutRequest){
+        return new ResponseEntity<>(eletronicPointsService.replace(eletronicPointsId,employeesRolesId, eletronicPointsPutRequest), HttpStatus.NO_CONTENT);
     }
 
 }

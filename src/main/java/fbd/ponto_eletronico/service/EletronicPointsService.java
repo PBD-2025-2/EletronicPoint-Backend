@@ -83,17 +83,18 @@ public class EletronicPointsService {
     }
 
     public EletronicPointsDTO register(Long employeeRolesId){
-        EletronicPoints eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Id(employeeRolesId).getLast();
+        List<EletronicPoints> eletronicPointsListById = eletronicPointsRepository.findByEmployeesRoles_IdOrderByIdAsc(employeeRolesId);
 
-        if(eletronicPointsData != null) {
+        if(!eletronicPointsListById.isEmpty()) {
+            EletronicPoints eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_IdOrderByIdAsc(employeeRolesId).getLast();
             return registerExistingEletronicPoint(eletronicPointsData);
+        }else {
+            return registerNewEletronicPoint(employeeRolesId);
         }
-
-        return registerNewEletronicPoint(employeeRolesId);
     }
 
-    public EletronicPointsDTO replace(Long eletronicPointsId, EletronicPointsPutRequest eletronicPointsPutRequest){
-        EmployeesRoles employeesRolesData = employeesRolesRepository.getReferenceById(eletronicPointsPutRequest.employeeRolesId());
+    public EletronicPointsDTO replace(Long eletronicPointsId, Long employeesRolesId, EletronicPointsPutRequest eletronicPointsPutRequest){
+        EmployeesRoles employeesRolesData = employeesRolesRepository.getReferenceById(employeesRolesId);
         EletronicPoints eletronicPoints = eletronicPointsRepository.getReferenceById(eletronicPointsId);
         EletronicPoints eletronicPointsReplaceDate = eletronicPointsMapper.eletronicPointsPutRequestToEletronicPoints(eletronicPointsPutRequest);
         eletronicPointsReplaceDate.setId(eletronicPoints.getId());
@@ -115,20 +116,19 @@ public class EletronicPointsService {
     }
 
     private EletronicPointsDTO registerExistingEletronicPoint(EletronicPoints eletronicPoints) {
-        LocalDate dateNow = LocalDate.now();
-        LocalTime timeNow = LocalTime.now();
         List<LocalTime> oldRegistersCurrent = findCurrentRegisterPoints(eletronicPoints);
+        int workRegime = eletronicPoints.getEmployeesRoles().getWorkRegime();
 
-        if (oldRegistersCurrent.stream().allMatch(Objects::nonNull)) {
-            closeRegister(eletronicPoints);
-            replace(eletronicPoints.getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
+        if((oldRegistersCurrent.get(3) != null && (workRegime == 1 || workRegime == 4)) ||
+                (oldRegistersCurrent.get(1) != null && (workRegime == 2 || workRegime == 3))){
+            Long id = eletronicPoints.getEmployeesRoles().getId();
+            return registerNewEletronicPoint(id);
         }
 
         if (isPending(eletronicPoints)) {
             return applyPedingStatus(eletronicPoints);
         }
 
-        int workRegime = eletronicPoints.getEmployeesRoles().getWorkRegime();
         if (workRegime == 1 || workRegime == 4) {
             registerStandardAndStraightShiftRegime(eletronicPoints, oldRegistersCurrent);
         }
@@ -137,7 +137,7 @@ public class EletronicPointsService {
             register24HoursAnd12HoursRegime(eletronicPoints, oldRegistersCurrent);
         }
 
-        return replace(eletronicPoints.getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
+        return replace(eletronicPoints.getId(),eletronicPoints.getEmployeesRoles().getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
 
     }
 
@@ -147,7 +147,7 @@ public class EletronicPointsService {
         currentRegisterPoints.add(eletronicPoints.getRegister_2());
         currentRegisterPoints.add(eletronicPoints.getRegister_3());
         currentRegisterPoints.add(eletronicPoints.getRegister_4());
-
+        log.info(currentRegisterPoints);
         return currentRegisterPoints;
     }
 
@@ -188,27 +188,24 @@ public class EletronicPointsService {
         }
 
         eletronicPoints.setEndDate(LocalDate.now());
-        return replace(eletronicPoints.getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
+        replace(eletronicPoints.getId(),eletronicPoints.getEmployeesRoles().getId(),
+                eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
+        return registerNewEletronicPoint(eletronicPoints.getEmployeesRoles().getId());
     }
 
     private void registerStandardAndStraightShiftRegime(EletronicPoints eletronicPoints, List<LocalTime> actualRegisters) {
         LocalTime now = LocalTime.now();
 
-        if (actualRegisters.getFirst() == null) {
+        if (actualRegisters.get(0) == null) {
             eletronicPoints.setRegister_1(now);
-        }
-
-        if (actualRegisters.get(1) == null) {
+        }else if(actualRegisters.get(1) == null) {
             eletronicPoints.setRegister_2(now);
-        }
-
-        if (actualRegisters.get(2) == null) {
+        }else if(actualRegisters.get(2) == null) {
             eletronicPoints.setRegister_3(now);
-        }
-
-        if (actualRegisters.get(3) == null) {
+        }else if(actualRegisters.get(3) == null){
             eletronicPoints.setRegister_4(now);
             closeRegister(eletronicPoints);
+            replace(eletronicPoints.getId(),eletronicPoints.getEmployeesRoles().getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
         }
     }
 

@@ -22,5 +22,4 @@ public class EmployeesCompanies {
     @ManyToOne
     @JoinColumn(columnDefinition = "employee_id", referencedColumnName = "id")
     private Employee employee;
-
 }

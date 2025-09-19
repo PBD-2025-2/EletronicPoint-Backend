@@ -32,13 +32,15 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
-    private String Password;
+    private String password;
     @Column(nullable = false)
     private UserRole role;
 
-    public User(String login, String password, UserRole role) {
+    public User(String name, String email, String login, String password, UserRole role) {
+        this.name = name;
+        this.email = email;
         this.username = login;
-        Password = password;
+        this.password = password;
         this.role = role;
     }
 

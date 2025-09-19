@@ -1,14 +1,14 @@
 package Auth_Microservice_PBD.Authentication.mapper;
 
 import Auth_Microservice_PBD.Authentication.dto.LoginDTO;
-import Auth_Microservice_PBD.Authentication.dto.RegisterDTO;
+import Auth_Microservice_PBD.Authentication.dto.UserDTO;
 import org.apache.catalina.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    User userToLoginDTO(LoginDTO loginDTO);
+    LoginDTO userToLoginDTO(User user);
 
-    User userToRegisterDTO(RegisterDTO registerDTO);
+    UserDTO userToUserDTO(User user);
 
 }

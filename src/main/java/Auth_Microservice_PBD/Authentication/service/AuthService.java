@@ -1,8 +1,10 @@
 package Auth_Microservice_PBD.Authentication.service;
 
-import Auth_Microservice_PBD.Authentication.dto.RegisterDTO;
+import Auth_Microservice_PBD.Authentication.dto.UserDTO;
 import Auth_Microservice_PBD.Authentication.repository.UserRepository;
+import Auth_Microservice_PBD.Authentication.request.RegisterRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +21,12 @@ public class AuthService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-//    public RegisterDTO
+    public UserDTO register(RegisterRequest registerRequest){
+        User userData = (User)userRepository.findByUsername(registerRequest.username());
+        if(userData == null){
+
+        }
+        return null;
+    }
 
 }

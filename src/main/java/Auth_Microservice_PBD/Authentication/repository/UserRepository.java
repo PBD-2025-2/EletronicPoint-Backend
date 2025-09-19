@@ -1,6 +1,6 @@
 package Auth_Microservice_PBD.Authentication.repository;
 
-import org.apache.catalina.User;
+import Auth_Microservice_PBD.Authentication.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 

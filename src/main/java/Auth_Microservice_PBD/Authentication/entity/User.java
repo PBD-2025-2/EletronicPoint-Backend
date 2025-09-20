@@ -36,14 +36,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRole role;
 
-    public User(String name, String email, String login, String password, UserRole role) {
-        this.name = name;
-        this.email = email;
-        this.username = login;
-        this.password = password;
-        this.role = role;
-    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

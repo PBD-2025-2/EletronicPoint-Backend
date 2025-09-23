@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/eletronicPoints")
+@RequestMapping("api/v1/eletronicPoints")
 @RequiredArgsConstructor
 public class EletronicPointsController {
 

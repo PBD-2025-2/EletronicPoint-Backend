@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/employeesCompanies")
+@RequestMapping("api/v1/employeesCompanies")
 @RequiredArgsConstructor
 public class EmployeesCompaniesController {
     private final EmployeesCompaniesService employeesCompaniesService;

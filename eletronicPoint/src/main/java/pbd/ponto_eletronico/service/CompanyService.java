@@ -21,6 +21,10 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
 
+    public String greetingMessage() {
+        return "Welcote to EletronicPoint/company application.";
+    }
+
     public List<CompanyDTO> findAll(){
         List<Company> companies = companyRepository.findAll();
         return companyMapper.toCompanyDtos(companies);

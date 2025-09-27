@@ -19,6 +19,11 @@ import java.util.List;
 public class CompanyController {
     private final CompanyService companyService;
 
+    @GetMapping(path = "/message")
+    public String greetingMessage() {
+        return companyService.greetingMessage();
+    }
+
     @GetMapping
     public ResponseEntity<List<CompanyDTO>> findAll(){
         return ResponseEntity.ok(companyService.findAll());

@@ -1,9 +1,37 @@
-spring.application.name=gateway
+spring:
+  application:
+    name: gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            - id: eletronicPoint
+              uri: lb://EletronicPoint
+              predicates:
+                - Path=/eletronicPoint/**
+              filters:
+                - StripPrefix=1
+                - AuthenticationFilter
 
-server.port=8282
-eureka.client.service-url.default-zone=http://localhost:8761/eureka/
-eureka.client.register-with-eureka=true
-eureka.client.fetch-registry=true
+            - id: authentication
+              uri: lb://Authentication
+              predicates:
+                - Path=/auth/**
+              filters:
+                  - StripPrefix=1
+server:
+  port: 8282
 
-spring.cloud.gateway.discovery.locator.enabled=true
-spring.cloud.gateway.discovery.locator.lower-case-service-id=true
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      default-zone: http://localhost:8761/eureka/

@@ -1,24 +1,28 @@
 package gateway.gateway.util;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
 
     public static final String SECRET = "from_Heldon";
+
     public void validateToken(final String token) {
-        Jwts.parser().verifyWith(getSignKey()).build().parseSignedClaims(token);
+        try {
+            Algorithm algorithm = getSignAlgorithm(SECRET);
+            JWT.require(algorithm)
+                    .withIssuer("EletronicPoint")
+                    .build()
+                    .verify(token);
+        } catch (JWTVerificationException e) {
+            throw new RuntimeException("unauthorized access");
+        }
     }
 
-    public SecretKey getSignKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
-        return Keys.hmacShaKeyFor(keyBytes);
+    public Algorithm getSignAlgorithm(String SECRET){
+        return Algorithm.HMAC256(SECRET);
     }
-
-
 }

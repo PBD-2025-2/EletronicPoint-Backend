@@ -6,4 +6,4 @@ import pbd.ponto_eletronico.enums.TypeRoster;
 
 import java.util.List;
 
-public record RosterPostRequest(String name, String weeklyWorkload, TypeRoster type, List<ScheduleDTO> schedules) {}
+public record RosterDutyPostRequest(String name, String weeklyWorkload, TypeRoster type, DutySchedulesDTO schedules) {}

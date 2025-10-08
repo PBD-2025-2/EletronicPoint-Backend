@@ -1,103 +1,80 @@
 package pbd.ponto_eletronico.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pbd.ponto_eletronico.dto.DailyScaleDTO;
-import pbd.ponto_eletronico.dto.DutyRosterDTO;
 import pbd.ponto_eletronico.dto.RosterDTO;
+import pbd.ponto_eletronico.dto.ScheduleDTO;
+import pbd.ponto_eletronico.entity.Schedule;
 import pbd.ponto_eletronico.entity.Roster;
 import pbd.ponto_eletronico.enums.TypeRoster;
+import pbd.ponto_eletronico.exception.BadRequestException;
+import pbd.ponto_eletronico.mapper.DutySchedulesMapper;
 import pbd.ponto_eletronico.mapper.RosterMapper;
+import pbd.ponto_eletronico.mapper.ScheduleMapper;
 import pbd.ponto_eletronico.repository.RosterRepository;
 import pbd.ponto_eletronico.request.RosterPostRequest;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class RosterService {
 
-
     private final RosterRepository rosterRepository;
-    private final ObjectMapper objectMapper;
     private final RosterMapper rosterMapper;
+    private final ScheduleMapper scheduleMapper;
+    private final DutySchedulesMapper dutySchedulesMapper;
 
-    public List<RosterDTO> findAll(){
-        List<Roster> rosters= rosterRepository.findAll();
-        for (Roster roster : rosters) {
-            if (roster == null) {
-                throw new RuntimeException("Error, no schedule found");
-            }
-            roster.setSchedules(formatSchedule(roster.getSchedules()));
-        }
-        return rosterMapper.listRosterToListRosterDto(rosterRepository.findAll());
+    public List<RosterDTO> findAll() throws JsonProcessingException {
+        List<Roster> rosters = rosterRepository.findAll();
+        return rosterMapper.listRosterToListRosterDto(rosters);
     }
 
     @Transactional
-    public RosterDTO save(RosterPostRequest rosterPostRequest) throws JsonProcessingException {
+    public RosterDTO save(RosterPostRequest rosterPostRequest) {
+        if (!requestIsValid(rosterPostRequest)) {
+            throw new BadRequestException("Request Invalid");
+        }
+
         Roster roster = new Roster();
-        roster.setType(rosterPostRequest.roster());
         roster.setName(rosterPostRequest.name());
         roster.setWeeklyWorkload(rosterPostRequest.weeklyWorkload());
-        roster.setSchedules(convertListToStringJson(rosterPostRequest.dailyScaleDTOS(), rosterPostRequest.dutyRosterDTO(), rosterPostRequest.roster()));
+        roster.setType(rosterPostRequest.type());
+
+        if (rosterPostRequest.type() == TypeRoster.Diaria) {
+            List<Schedule> schedules = rosterPostRequest.schedules().stream().map(scheduleMapper::scheduleDTOToSchedule).toList();
+            roster.setSchedules(schedules);
+        }
+
+//        if (rosterPostRequest.type() == TypeRoster.Plantão) {
+//            roster.setDutySchedules(dutySchedulesMapper.dutySchedulesDTOToDutySchedules(rosterPostRequest.dutySchedules()));
+//        }
+
         return rosterMapper.rosterToRosterDto(rosterRepository.save(roster));
     }
 
-
-    public String convertListToStringJson(List<DailyScaleDTO> dailyScaleDTO, DutyRosterDTO dutyRosterDTO, TypeRoster typeRoster) throws JsonProcessingException {
-
-        if(typeRoster.getRoster() != null && typeRoster.getRoster().equals( TypeRoster.Diaria.getRoster())){
-            return objectMapper.writeValueAsString(dailyScaleDTO);
+    private boolean requestIsValid(RosterPostRequest rosterPostRequest) {
+        if (rosterPostRequest.schedules().size() > 7) {
+            throw new BadRequestException("The times are exceeding the limit");
         }
-        if (typeRoster.getRoster() != null && typeRoster.getRoster().equals(TypeRoster.Plantão.getRoster())){
-            return objectMapper.writeValueAsString(dutyRosterDTO);
+
+        if (!verifyDuplicateDayOfWeek(rosterPostRequest.schedules())) {
+            throw new BadRequestException("Existing repetead days.");
         }
-        throw new RuntimeException("conversion error");
+
+        return true;
     }
 
-    public String formatSchedule(String schedule){
-        if(schedule == null){
-            throw new RuntimeException("Error, no schedule found");
-        }
-        try{
-            JsonElement elementSchedule = JsonParser.parseString(schedule);
-            if(!elementSchedule.isJsonArray()){
-                throw new RuntimeException("The format for schedule is not JSON Array");
-            }
-            JsonArray jsonArray = elementSchedule.getAsJsonArray();
+    private boolean verifyDuplicateDayOfWeek(List<ScheduleDTO> schedules) {
+        Set<String> seen = new HashSet<>();
+        boolean hasDuplicates = schedules.stream()
+                .map(ScheduleDTO::day)
+                .anyMatch(day -> !seen.add(day));
 
-            StringBuilder formattedOutput = new StringBuilder();
-
-            for(int i = 0; i < jsonArray.size(); i ++){
-                JsonObject scheduleDay = jsonArray.get(i).getAsJsonObject();
-
-                String day = scheduleDay.get("day").getAsString();
-                JsonArray periods = scheduleDay.get("period").getAsJsonArray();
-                String periodsClean = StreamSupport.stream(periods.spliterator(), false)
-                        .map(JsonElement::getAsString)
-                        .collect(Collectors.joining(", "));
-
-                formattedOutput.append("Day: ").append(day).append(", Period: ").append(periodsClean);
-
-                if(i < jsonArray.size() -1){
-                    formattedOutput.append("\n");
-                }
-            }
-            return formattedOutput.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Error processing json" + e);
-        }
-
+        return !hasDuplicates;
     }
-
 }

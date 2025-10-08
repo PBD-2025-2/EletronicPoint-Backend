@@ -1,4 +1,8 @@
 package pbd.ponto_eletronico.dto;
 
-public record RosterDTO(Long id, String name, String weeklyWorkload, String schedules) {
+import pbd.ponto_eletronico.enums.TypeRoster;
+
+import java.util.List;
+
+public record RosterDTO(Long id, String name, TypeRoster type, String weeklyWorkload, List<ScheduleDTO> schedules) {
 }

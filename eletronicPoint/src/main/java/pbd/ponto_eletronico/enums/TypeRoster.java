@@ -4,7 +4,7 @@ public enum TypeRoster {
     Diaria("diaria"),
     Plantão("plantão");
 
-    private String roster;
+    private final String roster;
 
     TypeRoster(String roster){this.roster = roster;}
 

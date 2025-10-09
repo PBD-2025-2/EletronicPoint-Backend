@@ -1,15 +1,18 @@
-package pbd.ponto_eletronico.entity;
+package pbd.ponto_eletronico.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DutySchedules {
-    private int initialTime;
-    private int timeOff;
+    private LocalTime startTime;
+    private Integer workDuration;
+    private Integer timeOff;
 }

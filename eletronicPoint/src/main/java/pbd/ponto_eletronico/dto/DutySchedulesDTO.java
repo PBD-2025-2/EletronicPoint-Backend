@@ -1,3 +1,5 @@
 package pbd.ponto_eletronico.dto;
 
-public record DutySchedulesDTO(String initialTime, int timeOff) {}
+import pbd.ponto_eletronico.enums.TypeRoster;
+
+public record DutySchedulesDTO(Long id, String name, TypeRoster type, String weeklyWorkload, DutySchedules dutySchedules) {}

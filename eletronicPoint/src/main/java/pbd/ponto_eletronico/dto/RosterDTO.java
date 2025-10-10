@@ -5,5 +5,5 @@ import pbd.ponto_eletronico.enums.TypeRoster;
 
 import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record RosterDTO (Long id, String name, TypeRoster type, String weeklyWorkload, List<DailySchedule> dailySchedules, DutySchedules dutySchedules){
+public record RosterDTO (Long id, String name, TypeRoster type, int weeklyWorkload, List<DailySchedule> dailySchedules, DutySchedules dutySchedules){
 }

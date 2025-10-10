@@ -29,7 +29,7 @@ public class Roster {
     @Column(name = "type")
     private TypeRoster type;
     @Column(columnDefinition = "weekly_workload")
-    private String weeklyWorkload;
+    private int weeklyWorkload;
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
     private List<DailySchedule> dailySchedules;

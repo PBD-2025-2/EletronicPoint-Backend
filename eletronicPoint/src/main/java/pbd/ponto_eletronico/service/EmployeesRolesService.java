@@ -66,7 +66,7 @@ public class EmployeesRolesService {
         Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeesRolesPostRequest.employeeId()));
         Role roleData = roleMapper.toRole(roleService.findById(employeesRolesPostRequest.roleId()));
 
-        if (existEmployeeRole(employeesRolesPostRequest.workRegime(), employeeData, roleData)) {
+        if (existEmployeeRole(employeesRolesPostRequest.idRoster(), employeeData, roleData)) {
             throw new BadRequestException("this role is already registered ");
         }
         List<EmployeesRoles> allRolesEmployee = employeesRolesMapper.toEmployeesRoles(findByEmployee(employeeData.getCpf()));
@@ -97,8 +97,8 @@ public class EmployeesRolesService {
         employeesRolesRepository.delete(employeesRolesData);
     }
 
-    private boolean existEmployeeRole(int  workRegime, Employee employee, Role role) {
-        return employeesRolesRepository.existsByWorkRegimeAndEmployeeAndRole(workRegime, employee, role);
+    private boolean existEmployeeRole(Long  idRoster, Employee employee, Role role) {
+        return employeesRolesRepository.existsByRoster_IdAndEmployeeAndRole(idRoster, employee, role);
     }
 
 }

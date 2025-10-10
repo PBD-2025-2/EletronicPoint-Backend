@@ -17,12 +17,13 @@ public class EmployeesRoles {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Boolean status;
-    private Integer workRegime;
+    @ManyToOne
+    @JoinColumn(columnDefinition = "roster_id", referencedColumnName = "id")
+    private Roster roster;
     @ManyToOne
     @JoinColumn(columnDefinition = "employee_id", referencedColumnName = "id")
     private Employee employee;
     @ManyToOne
     @JoinColumn(columnDefinition = "role_id", referencedColumnName = "id")
     private Role role;
-
 }

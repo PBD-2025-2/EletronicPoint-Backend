@@ -3,6 +3,7 @@ package pbd.ponto_eletronico.service;
 import pbd.ponto_eletronico.dto.EletronicPointsDTO;
 import pbd.ponto_eletronico.entity.EletronicPoints;
 import pbd.ponto_eletronico.entity.EmployeesRoles;
+import pbd.ponto_eletronico.enums.TypeRoster;
 import pbd.ponto_eletronico.exception.BadRequestException;
 import pbd.ponto_eletronico.mapper.EletronicPointsMapper;
 import pbd.ponto_eletronico.mapper.EmployeesRolesMapper;
@@ -117,24 +118,24 @@ public class EletronicPointsService {
 
     private EletronicPointsDTO registerExistingEletronicPoint(EletronicPoints eletronicPoints) {
         List<LocalTime> oldRegistersCurrent = findCurrentRegisterPoints(eletronicPoints);
-        int workRegime = eletronicPoints.getEmployeesRoles().getWorkRegime();
-
-        if((oldRegistersCurrent.get(3) != null && (workRegime == 1 || workRegime == 4)) ||
-                (oldRegistersCurrent.get(1) != null && (workRegime == 2 || workRegime == 3))){
-            Long id = eletronicPoints.getEmployeesRoles().getId();
-            return registerNewEletronicPoint(id);
-        }
+        TypeRoster workRegime = eletronicPoints.getEmployeesRoles().getRoster().getType();
 
         if (isPending(eletronicPoints)) {
             return applyPedingStatus(eletronicPoints);
         }
 
-        if (workRegime == 1 || workRegime == 4) {
-            registerStandardAndStraightShiftRegime(eletronicPoints, oldRegistersCurrent);
+        if((oldRegistersCurrent.get(3) != null && (workRegime == TypeRoster.Diaria)) ||
+            (oldRegistersCurrent.get(1) != null && (workRegime == TypeRoster.Plantão))){
+            Long id = eletronicPoints.getEmployeesRoles().getId();
+            return registerNewEletronicPoint(id);
         }
 
-        if (workRegime == 2 || workRegime == 3) {
-            register24HoursAnd12HoursRegime(eletronicPoints, oldRegistersCurrent);
+        if (workRegime == TypeRoster.Diaria) {
+            registerDailySchedule(eletronicPoints, oldRegistersCurrent);
+        }
+
+        if (workRegime == TypeRoster.Plantão) {
+            registerDutySchedule(eletronicPoints, oldRegistersCurrent);
         }
 
         return replace(eletronicPoints.getId(),eletronicPoints.getEmployeesRoles().getId(), eletronicPointsMapper.eletronicPointsToEletronicPointsPutRequest(eletronicPoints));
@@ -157,20 +158,19 @@ public class EletronicPointsService {
     }
 
     private boolean isPending(EletronicPoints eletronicPoints) {
-        int workRegime = eletronicPoints.getEmployeesRoles().getWorkRegime();
+        int weeklyWorkload = eletronicPoints.getEmployeesRoles().getRoster().getWeeklyWorkload();
+        TypeRoster workRegime = eletronicPoints.getEmployeesRoles().getRoster().getType();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDateAndFirstRegister = LocalDateTime.of(eletronicPoints.getStartDate(), eletronicPoints.getRegister_1());
         long durationBetweenDates = Duration.between(startDateAndFirstRegister, now).toHours();
 
-        if (now.toLocalDate().isAfter(eletronicPoints.getStartDate()) && (workRegime == 1 || workRegime == 4)) {
+        if ((workRegime == TypeRoster.Diaria) &&
+            (now.toLocalDate().isAfter(eletronicPoints.getStartDate()) ||
+            eletronicPoints.getRegister_4() != null && (durationBetweenDates < weeklyWorkload))) {
             return true;
         }
 
-        if (workRegime == 2 && durationBetweenDates < 12) {
-            return true;
-        }
-
-        if (workRegime == 3 && durationBetweenDates < 24) {
+        if ((workRegime == TypeRoster.Plantão) && durationBetweenDates < weeklyWorkload) {
             return true;
         }
 
@@ -178,10 +178,10 @@ public class EletronicPointsService {
     }
 
     private EletronicPointsDTO applyPedingStatus(EletronicPoints eletronicPoints) {
-        switch (eletronicPoints.getEmployeesRoles().getWorkRegime()) {
-            case 1, 4 -> eletronicPoints.setStatus(3);
+        switch (eletronicPoints.getEmployeesRoles().getRoster().getType()) {
+            case TypeRoster.Diaria -> eletronicPoints.setStatus(3);
 
-            case 2, 3 -> {
+            case TypeRoster.Plantão -> {
                 eletronicPoints.setStatus(3);
                 eletronicPoints.setRegister_2(LocalTime.now());
             }
@@ -193,7 +193,7 @@ public class EletronicPointsService {
         return registerNewEletronicPoint(eletronicPoints.getEmployeesRoles().getId());
     }
 
-    private void registerStandardAndStraightShiftRegime(EletronicPoints eletronicPoints, List<LocalTime> actualRegisters) {
+    private void registerDailySchedule(EletronicPoints eletronicPoints, List<LocalTime> actualRegisters) {
         LocalTime now = LocalTime.now();
 
         if (actualRegisters.get(0) == null) {
@@ -209,7 +209,7 @@ public class EletronicPointsService {
         }
     }
 
-    private void register24HoursAnd12HoursRegime(EletronicPoints eletronicPoints, List<LocalTime> actualRegisters) {
+    private void registerDutySchedule(EletronicPoints eletronicPoints, List<LocalTime> actualRegisters) {
         LocalTime now = LocalTime.now();
 
         if (actualRegisters.getFirst() == null) {
@@ -220,6 +220,5 @@ public class EletronicPointsService {
             eletronicPoints.setRegister_2(now);
             closeRegister(eletronicPoints);
         }
-
     }
 }

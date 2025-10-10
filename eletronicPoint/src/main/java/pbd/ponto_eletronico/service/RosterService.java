@@ -1,5 +1,7 @@
 package pbd.ponto_eletronico.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pbd.ponto_eletronico.dto.DailySchedule;
 import pbd.ponto_eletronico.dto.DailySchedulesDTO;
 import pbd.ponto_eletronico.dto.DutySchedulesDTO;
+import pbd.ponto_eletronico.dto.RosterDTO;
 import pbd.ponto_eletronico.entity.Roster;
 import pbd.ponto_eletronico.enums.TypeRoster;
 import pbd.ponto_eletronico.exception.BadRequestException;
@@ -30,9 +33,9 @@ public class RosterService {
     private final ScheduleMapper scheduleMapper;
     private final DutySchedulesMapper dutySchedulesMapper;
 
-    public List<DailySchedulesDTO> findAll() throws JsonProcessingException {
+    public List<RosterDTO> findAll() throws JsonProcessingException {
         List<Roster> rosters = rosterRepository.findAll();
-        return rosterMapper.listRosterToListRosterDto(rosters);
+        return rosterMapper.listRostertoRosterDTO(rosters);
     }
 
     @Transactional
@@ -46,8 +49,8 @@ public class RosterService {
         roster.setWeeklyWorkload(rosterPostRequest.weeklyWorkload());
         roster.setType(TypeRoster.Diaria);
 
-        List<DailySchedule> schedules = rosterPostRequest.dailySchedules().stream().toList();
-        roster.setSchedules(schedules);
+        List<DailySchedule> dailySchedules = rosterPostRequest.dailySchedules().stream().toList();
+        roster.setDailySchedules(dailySchedules);
 
 
         return rosterMapper.rosterToRosterDto(rosterRepository.save(roster));

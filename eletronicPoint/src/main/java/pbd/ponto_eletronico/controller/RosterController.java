@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pbd.ponto_eletronico.dto.DailySchedulesDTO;
 import pbd.ponto_eletronico.dto.DutySchedulesDTO;
+import pbd.ponto_eletronico.dto.RosterDTO;
 import pbd.ponto_eletronico.request.RosterDiaryPostRequest;
 import pbd.ponto_eletronico.request.RosterDutyPostRequest;
 import pbd.ponto_eletronico.service.RosterService;
@@ -22,7 +23,7 @@ public class RosterController {
     private final RosterService rosterService;
 
     @GetMapping
-    public ResponseEntity<List<DailySchedulesDTO>> findAll() throws JsonProcessingException {
+    public ResponseEntity<List<RosterDTO>> findAll() throws JsonProcessingException {
         return ResponseEntity.ok(rosterService.findAll());
     }
 

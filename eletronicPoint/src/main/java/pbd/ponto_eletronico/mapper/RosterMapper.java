@@ -3,6 +3,7 @@ package pbd.ponto_eletronico.mapper;
 import org.mapstruct.Mapper;
 import pbd.ponto_eletronico.dto.DailySchedulesDTO;
 import pbd.ponto_eletronico.dto.DutySchedulesDTO;
+import pbd.ponto_eletronico.dto.RosterDTO;
 import pbd.ponto_eletronico.entity.Roster;
 
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.List;
 public interface RosterMapper {
     Roster rosterDtoToRoster(DailySchedulesDTO rosterDTO);
     DailySchedulesDTO rosterToRosterDto(Roster roster);
-    List<DailySchedulesDTO> listRosterToListRosterDto(List<Roster> rosters);
-    List<Roster> listRosterDtoTOListRoster(List<DailySchedulesDTO> rosterDTOS);
     DutySchedulesDTO rostertoDutySchedulesDTO(Roster roster);
+    List<RosterDTO> listRostertoRosterDTO (List<Roster> rosters);
 }

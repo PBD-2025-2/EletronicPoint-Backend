@@ -1,22 +1,22 @@
 package pbd.ponto_eletronico.service;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import pbd.ponto_eletronico.dto.EmployeesRolesDTO;
 import pbd.ponto_eletronico.entity.Employee;
 import pbd.ponto_eletronico.entity.EmployeesRoles;
 import pbd.ponto_eletronico.entity.Role;
+import pbd.ponto_eletronico.entity.Roster;
 import pbd.ponto_eletronico.exception.BadRequestException;
-import pbd.ponto_eletronico.mapper.CompanyMapper;
 import pbd.ponto_eletronico.mapper.EmployeeMapper;
-import pbd.ponto_eletronico.mapper.RoleMapper;
 import pbd.ponto_eletronico.mapper.EmployeesRolesMapper;
+import pbd.ponto_eletronico.mapper.RoleMapper;
+import pbd.ponto_eletronico.mapper.RosterMapper;
 import pbd.ponto_eletronico.repository.EmployeesRolesRepository;
-import pbd.ponto_eletronico.repository.RoleRepository;
 import pbd.ponto_eletronico.request.EmployeesRolesPostRequest;
 import pbd.ponto_eletronico.request.EmployeesRolesPutRequest;
 import pbd.ponto_eletronico.util.FilterActivesRoles;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +26,12 @@ import java.util.Optional;
 public class EmployeesRolesService {
     private final EmployeesRolesRepository employeesRolesRepository;
     private final EmployeesRolesMapper employeesRolesMapper;
-    private final CompanyMapper companyMapper;
-    private final CompanyService companyService;
     private final RoleMapper roleMapper;
     private final RoleService roleService;
+    private final RosterMapper rosterMapper;
+    private final RosterService rosterService;
     private final EmployeeMapper employeeMapper;
     private final EmployeeService employeeService;
-    private final RoleRepository roleRepository;
 
     public List<EmployeesRolesDTO> listAll() {
         List<EmployeesRoles> employeesRoles = employeesRolesRepository.findAll();
@@ -65,6 +64,7 @@ public class EmployeesRolesService {
     public EmployeesRoles save(EmployeesRolesPostRequest employeesRolesPostRequest){
         Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeesRolesPostRequest.employeeId()));
         Role roleData = roleMapper.toRole(roleService.findById(employeesRolesPostRequest.roleId()));
+        Roster rosterData = rosterMapper.rosterDTOToRoster(rosterService.findById(employeesRolesPostRequest.idRoster()));
 
         if (existEmployeeRole(employeesRolesPostRequest.idRoster(), employeeData, roleData)) {
             throw new BadRequestException("this role is already registered ");
@@ -79,6 +79,7 @@ public class EmployeesRolesService {
 
         employeesRolesData.setRole(roleData);
         employeesRolesData.setEmployee(employeeData);
+        employeesRolesData.setRoster(rosterData);
         return employeesRolesRepository.save(employeesRolesData);
     }
 

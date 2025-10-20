@@ -1,7 +1,5 @@
 package pbd.ponto_eletronico.service;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,7 @@ import pbd.ponto_eletronico.request.RosterDutyPostRequest;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -36,6 +35,12 @@ public class RosterService {
     public List<RosterDTO> findAll() throws JsonProcessingException {
         List<Roster> rosters = rosterRepository.findAll();
         return rosterMapper.listRostertoRosterDTO(rosters);
+    }
+
+    public RosterDTO findById(Long id) {
+        Optional<Roster> rosterData = rosterRepository.findById(id);
+        return rosterMapper.rosterToRosterDTO(rosterData.
+                orElseThrow(() -> new BadRequestException("Id Not Found")));
     }
 
     @Transactional
@@ -53,7 +58,7 @@ public class RosterService {
         roster.setDailySchedules(dailySchedules);
 
 
-        return rosterMapper.rosterToRosterDto(rosterRepository.save(roster));
+        return rosterMapper.rosterToDailySchedulesDTO(rosterRepository.save(roster));
     }
 
     public DutySchedulesDTO registerDutySchedule(RosterDutyPostRequest rosterDutyPostRequest){
@@ -66,8 +71,6 @@ public class RosterService {
 
         return rosterMapper.rostertoDutySchedulesDTO(rosterRepository.save(roster));
     }
-
-
 
     private boolean requestIsValid(RosterDiaryPostRequest rosterPostRequest) {
         if (rosterPostRequest.dailySchedules().size() > 7) {

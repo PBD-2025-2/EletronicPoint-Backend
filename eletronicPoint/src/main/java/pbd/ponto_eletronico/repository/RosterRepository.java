@@ -7,5 +7,6 @@ import pbd.ponto_eletronico.entity.Roster;
 import java.util.List;
 
 public interface RosterRepository extends JpaRepository<Roster, Long> {
+    Roster findByName(String name);
 
 }

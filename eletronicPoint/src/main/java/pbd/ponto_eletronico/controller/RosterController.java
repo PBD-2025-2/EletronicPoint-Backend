@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pbd.ponto_eletronico.dto.CompanyDTO;
 import pbd.ponto_eletronico.dto.DailySchedulesDTO;
 import pbd.ponto_eletronico.dto.DutySchedulesDTO;
 import pbd.ponto_eletronico.dto.RosterDTO;
@@ -15,7 +16,7 @@ import pbd.ponto_eletronico.service.RosterService;
 
 import java.util.List;
 
-@RequestMapping(path = "/type")
+@RequestMapping("api/v1/rosters")
 @RestController
 @RequiredArgsConstructor
 public class RosterController {
@@ -25,6 +26,16 @@ public class RosterController {
     @GetMapping
     public ResponseEntity<List<RosterDTO>> findAll() throws JsonProcessingException {
         return ResponseEntity.ok(rosterService.findAll());
+    }
+
+    @GetMapping(path = "/id/{id}")
+    public ResponseEntity<RosterDTO> findById(@PathVariable Long id){
+        return ResponseEntity.ok(rosterService.findById(id));
+    }
+
+    @GetMapping(path = "/name/{name}")
+    public ResponseEntity<RosterDTO> findByName(@PathVariable String name){
+        return ResponseEntity.ok(rosterService.findByName(name));
     }
 
     @PostMapping("/daily")

@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pbd.ponto_eletronico.dto.DailySchedule;
-import pbd.ponto_eletronico.dto.DailySchedulesDTO;
-import pbd.ponto_eletronico.dto.DutySchedulesDTO;
-import pbd.ponto_eletronico.dto.RosterDTO;
+import pbd.ponto_eletronico.dto.*;
+import pbd.ponto_eletronico.entity.Company;
 import pbd.ponto_eletronico.entity.Roster;
 import pbd.ponto_eletronico.enums.TypeRoster;
 import pbd.ponto_eletronico.exception.BadRequestException;
@@ -41,6 +39,11 @@ public class RosterService {
         Optional<Roster> rosterData = rosterRepository.findById(id);
         return rosterMapper.rosterToRosterDTO(rosterData.
                 orElseThrow(() -> new BadRequestException("Id Not Found")));
+    }
+
+    public RosterDTO findByName(String name) {
+        Roster rosterData = rosterRepository.findByName(name);
+        return rosterMapper.rosterToRosterDTO(rosterData);
     }
 
     @Transactional

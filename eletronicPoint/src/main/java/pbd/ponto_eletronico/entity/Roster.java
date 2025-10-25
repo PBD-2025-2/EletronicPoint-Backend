@@ -7,11 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import pbd.ponto_eletronico.dto.DutySchedules;
-import pbd.ponto_eletronico.dto.DailySchedule;
 import pbd.ponto_eletronico.enums.TypeRoster;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -31,10 +27,7 @@ public class Roster {
     @Column(columnDefinition = "weekly_workload")
     private int weeklyWorkload;
     @Type(JsonType.class)
-    @Column(columnDefinition = "jsonb")
-    private List<DailySchedule> dailySchedules;
-    @Type(JsonType.class)
-    @Column(columnDefinition = "jsonb")
-    private DutySchedules dutySchedules;
+    @Column(name = "schedules", columnDefinition = "jsonb")
+    private Object schedules;
 
 }

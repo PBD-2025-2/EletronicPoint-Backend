@@ -5,10 +5,9 @@ import pbd.ponto_eletronico.enums.TypeRoster;
 
 import java.util.List;
 
-public record RosterDiaryPostRequest(String name, int weeklyWorkload, List<DailySchedule> schedules) implements RosterPostRequest{
-
+public record RosterDiaryPutRequest(Long id, String name, int weeklyWorkload, List<DailySchedule> schedules) implements RosterPutRequest {
     @Override
     public TypeRoster type() {
-        return TypeRoster.Diaria;
+        return TypeRoster.Plantão;
     }
 }

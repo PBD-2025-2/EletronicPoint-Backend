@@ -3,18 +3,13 @@ package pbd.ponto_eletronico.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pbd.ponto_eletronico.dto.*;
-import pbd.ponto_eletronico.entity.Company;
 import pbd.ponto_eletronico.entity.Roster;
 import pbd.ponto_eletronico.enums.TypeRoster;
 import pbd.ponto_eletronico.exception.BadRequestException;
-import pbd.ponto_eletronico.mapper.DutySchedulesMapper;
 import pbd.ponto_eletronico.mapper.RosterMapper;
-import pbd.ponto_eletronico.mapper.ScheduleMapper;
 import pbd.ponto_eletronico.repository.RosterRepository;
-import pbd.ponto_eletronico.request.RosterDiaryPostRequest;
-import pbd.ponto_eletronico.request.RosterDutyPostRequest;
+import pbd.ponto_eletronico.request.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,8 +22,6 @@ public class RosterService {
 
     private final RosterRepository rosterRepository;
     private final RosterMapper rosterMapper;
-    private final ScheduleMapper scheduleMapper;
-    private final DutySchedulesMapper dutySchedulesMapper;
 
     public List<RosterDTO> findAll() throws JsonProcessingException {
         List<Roster> rosters = rosterRepository.findAll();
@@ -46,41 +39,67 @@ public class RosterService {
         return rosterMapper.rosterToRosterDTO(rosterData);
     }
 
-    @Transactional
-    public DailySchedulesDTO registerDailySchedule(RosterDiaryPostRequest rosterPostRequest) {
-        if (!requestIsValid(rosterPostRequest)) {
-            throw new BadRequestException("Request Invalid");
+    public RosterDTO save(RosterPostRequest rosterPostRequest){
+        if(rosterPostRequest instanceof  RosterDiaryPostRequest diaryPostRequest){
+            if (!requestIsValid(diaryPostRequest)) {
+                throw new BadRequestException("Request Invalid");}
         }
-
         Roster roster = new Roster();
         roster.setName(rosterPostRequest.name());
         roster.setWeeklyWorkload(rosterPostRequest.weeklyWorkload());
-        roster.setType(TypeRoster.Diaria);
-
-        List<DailySchedule> dailySchedules = rosterPostRequest.dailySchedules().stream().toList();
-        roster.setDailySchedules(dailySchedules);
-
-
-        return rosterMapper.rosterToDailySchedulesDTO(rosterRepository.save(roster));
+        setRosterSchedulesAndType(roster, rosterPostRequest);
+        Roster rosterData = rosterRepository.save(roster);
+        return rosterMapper.rosterToRosterDTO(rosterData);
     }
 
-    public DutySchedulesDTO registerDutySchedule(RosterDutyPostRequest rosterDutyPostRequest){
-        Roster roster = new Roster();
-        roster.setName(rosterDutyPostRequest.name());
-        roster.setWeeklyWorkload(rosterDutyPostRequest.weeklyWorkload());
-        roster.setType(TypeRoster.Plantão);
+    public RosterDTO replace(Long id, RosterPutRequest rosterPutRequest){
+        if(rosterPutRequest instanceof  RosterDiaryPutRequest diaryPutRequest){
+            if (!requestIsValid(diaryPutRequest)) {
+                throw new BadRequestException("Request Invalid");}
+        }
+        Roster rosterData = rosterMapper.rosterDTOToRoster(findById(id));
+        rosterData.setId(id);
+        rosterData.setName(rosterPutRequest.name());
+        rosterData.setWeeklyWorkload(rosterPutRequest.weeklyWorkload());
+        setRosterSchedulesAndType(rosterData, ((RosterPostRequest) rosterPutRequest));
+        return rosterMapper.rosterToRosterDTO(rosterRepository.save(rosterData));
+    }
 
-        roster.setDutySchedules(rosterDutyPostRequest.dutySchedules());
-
-        return rosterMapper.rostertoDutySchedulesDTO(rosterRepository.save(roster));
+    private void setRosterSchedulesAndType(Roster roster, RosterPostRequest rosterPostRequest){
+        roster.setType(rosterPostRequest.type());
+        if(rosterPostRequest.type() == TypeRoster.Diaria){
+            if(rosterPostRequest instanceof  RosterDiaryPostRequest diaryPostRequest){
+            roster.setSchedules(diaryPostRequest.schedules());}
+            else if(rosterPostRequest instanceof RosterDiaryPutRequest diaryPutRequest){
+                roster.setSchedules(diaryPutRequest.schedules());
+            }
+        }else if(rosterPostRequest.type() == TypeRoster.Plantão){
+            if(rosterPostRequest instanceof RosterDutyPostRequest dutyPostRequest){
+                roster.setSchedules(dutyPostRequest.schedules());
+            }else if(rosterPostRequest instanceof  RosterDutyPutRequest dutyPutRequest)
+            roster.setSchedules(dutyPutRequest.schedules());
+        }else{
+            throw new IllegalArgumentException("Type invalid");
+        }
     }
 
     private boolean requestIsValid(RosterDiaryPostRequest rosterPostRequest) {
-        if (rosterPostRequest.dailySchedules().size() > 7) {
+        if (rosterPostRequest.schedules().size() > 7) {
             throw new BadRequestException("The times are exceeding the limit");
         }
 
-        if (!verifyDuplicateDayOfWeek(rosterPostRequest.dailySchedules())) {
+        if (!verifyDuplicateDayOfWeek(rosterPostRequest.schedules())) {
+            throw new BadRequestException("Existing repetead days.");
+        }
+
+        return true;
+    }
+    private boolean requestIsValid(RosterDiaryPutRequest rosterDiaryPutRequest) {
+        if (rosterDiaryPutRequest.schedules().size() > 7) {
+            throw new BadRequestException("The times are exceeding the limit");
+        }
+
+        if (!verifyDuplicateDayOfWeek(rosterDiaryPutRequest.schedules())) {
             throw new BadRequestException("Existing repetead days.");
         }
 

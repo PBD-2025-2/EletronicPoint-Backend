@@ -5,14 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DutySchedules {
-    private LocalTime startTime;
+    private String startTime;
     private Integer workDuration;
     private Integer timeOff;
 }

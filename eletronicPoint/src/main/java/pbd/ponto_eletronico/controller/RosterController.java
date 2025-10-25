@@ -6,12 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pbd.ponto_eletronico.dto.CompanyDTO;
-import pbd.ponto_eletronico.dto.DailySchedulesDTO;
-import pbd.ponto_eletronico.dto.DutySchedulesDTO;
 import pbd.ponto_eletronico.dto.RosterDTO;
 import pbd.ponto_eletronico.request.RosterDiaryPostRequest;
+import pbd.ponto_eletronico.request.RosterDiaryPutRequest;
 import pbd.ponto_eletronico.request.RosterDutyPostRequest;
+import pbd.ponto_eletronico.request.RosterDutyPutRequest;
 import pbd.ponto_eletronico.service.RosterService;
 
 import java.util.List;
@@ -39,12 +38,22 @@ public class RosterController {
     }
 
     @PostMapping("/daily")
-    public ResponseEntity<DailySchedulesDTO> registerDailySchedule(@RequestBody @Valid RosterDiaryPostRequest rosterPostRequest) throws JsonProcessingException {
-        return new ResponseEntity<>(rosterService.registerDailySchedule(rosterPostRequest), HttpStatus.CREATED);
+    public ResponseEntity<?> registerDailySchedule(@RequestBody @Valid RosterDiaryPostRequest rosterPostRequest){
+        return new ResponseEntity<>(rosterService.save(rosterPostRequest), HttpStatus.CREATED);
     }
 
     @PostMapping("/duty")
-    public ResponseEntity<DutySchedulesDTO> registerDutySchedule(@RequestBody @Valid RosterDutyPostRequest rosterDutyPostRequest) throws JsonProcessingException {
-        return new ResponseEntity<>(rosterService.registerDutySchedule(rosterDutyPostRequest), HttpStatus.CREATED);
+    public ResponseEntity<?> registerDutySchedule(@RequestBody @Valid RosterDutyPostRequest rosterDutyPostRequest) {
+        return new ResponseEntity<>(rosterService.save(rosterDutyPostRequest), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/Diary/id{id}")
+    public ResponseEntity<?> replaceDiary(@PathVariable Long id, @RequestBody @Valid RosterDiaryPutRequest rosterDiaryPutRequest){
+        return new ResponseEntity<>(rosterService.replace(id, rosterDiaryPutRequest), HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/Duty/id{id}")
+    public ResponseEntity<?> replaceDuty(@PathVariable Long id, @RequestBody @Valid RosterDutyPutRequest rosterDutyPutRequest){
+        return new ResponseEntity<>(rosterService.replace(id, rosterDutyPutRequest), HttpStatus.NO_CONTENT);
     }
 }

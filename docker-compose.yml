@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  eureka-server:
+    image: eletronicpoint-backend-eureka-server
+    build: ./eurekaServer
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+
+  gateway:
+    image: eletronicpoint-backend-gateway
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "8282:8282"
+    depends_on:
+      - eureka-server
+    networks:
+      - backend
+    volumes:
+      - ~/.m2:/root/.m2
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+
+  eletronic-point:
+    image: eletronicpoint-backend-eletronic-point
+    build: ./eletronicPoint
+    container_name: eletronic-point
+    ports:
+      - "8181:8181"
+    depends_on:
+      - eureka-server
+    networks:
+      - backend
+    volumes:
+      - ~/.m2:/root/.m2
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+
+  authentication:
+    image: eletronicpoint-backend-authentication
+    build: ./authentication
+    container_name: authentication
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    networks:
+      - backend
+    volumes:
+      - ~/.m2:/root/.m2
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/EletronicPointAuth
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+
+  frontend:
+    image: eletronicpoint-gui
+    build:
+      context: "C:\\Users\\marce\\OneDrive\\Documentos\\GitHub\\Eletronic-Point-GUI"
+    container_name: frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - gateway
+networks:
+  backend:
+    driver: bridge

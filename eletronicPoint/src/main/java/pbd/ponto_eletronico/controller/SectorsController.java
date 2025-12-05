@@ -39,10 +39,10 @@ public class SectorsController {
         return  ResponseEntity.ok(sectorsService.findByName(name));
     }
 
-    @GetMapping(path = "/sectorsName/{name}")
-    public ResponseEntity<List<RoleDTO>> findAllRolesInSector(@PathVariable String name) {
-        return  ResponseEntity.ok(sectorsService.findAllRolesInSector(name));
-    }
+//    @GetMapping(path = "/sectorsName/{name}")
+//    public ResponseEntity<List<RoleDTO>> findAllRolesInSector(@PathVariable String name) {
+//        return  ResponseEntity.ok(sectorsService.findAllRolesInSector(name));
+//    }
 
     @PostMapping
     public ResponseEntity<Sectors> save(@RequestBody @Valid SectorsPostRequest sectorsPostRequest) {

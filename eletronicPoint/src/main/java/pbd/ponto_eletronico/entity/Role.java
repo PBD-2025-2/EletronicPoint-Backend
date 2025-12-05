@@ -19,9 +19,6 @@ public class Role {
     private Long id;
     private String name;
     @ManyToOne
-    @JoinColumn(columnDefinition = "companyId", referencedColumnName = "id")
-    private Company company;
-    @ManyToOne
     @JoinColumn(columnDefinition = "sectors_id", referencedColumnName = "id")
     private Sectors sectors;
 }

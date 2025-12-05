@@ -35,17 +35,17 @@ public class RoleController {
     }
 
     @GetMapping(path = "/cnpj/{cnpj}")
-    public ResponseEntity<List<RoleDTO>> findByCompanyName(@PathVariable String cnpj) {
-        return  ResponseEntity.ok(roleService.findByCompany(cnpj));
+    public ResponseEntity<List<RoleDTO>> findBySectorName(@PathVariable String sector) {
+        return  ResponseEntity.ok(roleService.findBySector(sector));
     }
 
-    @GetMapping(path = "/rolename/{name}/cnpj/{cnpj}")
-    public ResponseEntity<List<RoleDTO>> findByRoleNameAndCnpj(@PathVariable String name, @PathVariable String cnpj){
-        return ResponseEntity.ok(roleService.findByRoleNameAndCnpj(name, cnpj));
+    @GetMapping(path = "/rolename/{name}/sectorName/{sectorName}")
+    public ResponseEntity<List<RoleDTO>> findByRoleNameAndSectorName(@PathVariable String name, @PathVariable String sectorName){
+        return ResponseEntity.ok(roleService.findByRoleNameAndSectors_Name(name, sectorName));
     }
 
     @PostMapping
-    public ResponseEntity<Role> save(@RequestBody @Valid RolePostRequest rolePostRequest) {
+    public ResponseEntity<RoleDTO> save(@RequestBody @Valid RolePostRequest rolePostRequest) {
         return  new ResponseEntity<>(roleService.save(rolePostRequest), HttpStatus.CREATED);
     }
 

@@ -24,7 +24,7 @@ public class SectorsService {
     private final SectorsRepository sectorsRepository;
     private final SectorsMapper sectorsMapper;
 
-    private final RoleService roleService;
+//    private final RoleService roleService;
     private final RoleMapper roleMapper;
 
     private final CompanyService companyService;
@@ -51,9 +51,9 @@ public class SectorsService {
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
 
-    public List<RoleDTO> findAllRolesInSector(String name) {
-        return roleService.listAll().stream().filter(roleDTO -> roleDTO.sectors().name().equals(name)).toList();
-    }
+//    public List<RoleDTO> findAllRolesInSector(String name) {
+//        return roleService.listAll().stream().filter(roleDTO -> roleDTO.sectors().name().equals(name)).toList();
+//    }
 
     @Transactional
     public Sectors save(SectorsPostRequest sectorsPostRequest) {

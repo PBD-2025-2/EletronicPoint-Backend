@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pbd.ponto_eletronico.dto.*;
 import pbd.ponto_eletronico.entity.Roster;
-import pbd.ponto_eletronico.enums.TypeRoster;
+import pbd.ponto_eletronico.enums.RosterType;
 import pbd.ponto_eletronico.exception.BadRequestException;
 import pbd.ponto_eletronico.mapper.RosterMapper;
 import pbd.ponto_eletronico.repository.RosterRepository;
@@ -67,13 +67,13 @@ public class RosterService {
 
     private void setRosterSchedulesAndType(Roster roster, RosterPostRequest rosterPostRequest){
         roster.setType(rosterPostRequest.type());
-        if(rosterPostRequest.type() == TypeRoster.Diaria){
+        if(rosterPostRequest.type() == RosterType.Diaria){
             if(rosterPostRequest instanceof  RosterDiaryPostRequest diaryPostRequest){
             roster.setSchedules(diaryPostRequest.schedules());}
             else if(rosterPostRequest instanceof RosterDiaryPutRequest diaryPutRequest){
                 roster.setSchedules(diaryPutRequest.schedules());
             }
-        }else if(rosterPostRequest.type() == TypeRoster.Plantão){
+        }else if(rosterPostRequest.type() == RosterType.Plantão){
             if(rosterPostRequest instanceof RosterDutyPostRequest dutyPostRequest){
                 roster.setSchedules(dutyPostRequest.schedules());
             }else if(rosterPostRequest instanceof  RosterDutyPutRequest dutyPutRequest)

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import pbd.ponto_eletronico.enums.TypeRoster;
+import pbd.ponto_eletronico.enums.RosterType;
 
 @Getter
 @Setter
@@ -23,7 +23,7 @@ public class Roster {
     private String name;
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private TypeRoster type;
+    private RosterType type;
     @Column(columnDefinition = "weekly_workload")
     private int weeklyWorkload;
     @Type(JsonType.class)

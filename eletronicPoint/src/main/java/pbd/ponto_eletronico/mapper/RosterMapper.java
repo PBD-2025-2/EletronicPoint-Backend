@@ -10,5 +10,5 @@ import java.util.List;
 public interface RosterMapper {
     Roster rosterDTOToRoster(RosterDTO rosterDTO);
     RosterDTO rosterToRosterDTO(Roster roster);
-     List<RosterDTO> listRostertoRosterDTO (List<Roster> rosters);
+    List<RosterDTO> listRostertoRosterDTO (List<Roster> rosters);
 }

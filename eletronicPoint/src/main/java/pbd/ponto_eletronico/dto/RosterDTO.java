@@ -1,9 +1,8 @@
 package pbd.ponto_eletronico.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import pbd.ponto_eletronico.enums.TypeRoster;
+import pbd.ponto_eletronico.enums.RosterType;
 
-import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record RosterDTO (Long id, String name, TypeRoster type, int weeklyWorkload, Object schedules){
+public record RosterDTO (Long id, String name, RosterType type, int weeklyWorkload, Object schedules){
 }

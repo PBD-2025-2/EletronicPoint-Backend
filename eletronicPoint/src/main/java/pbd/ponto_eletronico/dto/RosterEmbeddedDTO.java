@@ -1,5 +1,5 @@
 package pbd.ponto_eletronico.dto;
 
-import pbd.ponto_eletronico.enums.TypeRoster;
+import pbd.ponto_eletronico.enums.RosterType;
 
-public record RosterEmbeddedDTO(String name, TypeRoster type, int weeklyWorkload) {}
+public record RosterEmbeddedDTO(String name, RosterType type, int weeklyWorkload) {}

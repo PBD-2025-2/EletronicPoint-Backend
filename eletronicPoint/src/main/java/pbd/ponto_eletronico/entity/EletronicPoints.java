@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pbd.ponto_eletronico.enums.OriginType;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,6 +28,9 @@ public class EletronicPoints {
     private LocalTime register_4;
     private LocalDate endDate;
     private Integer status;
+    @Column(name = "origin")
+    @Enumerated(EnumType.STRING)
+    private OriginType origin;
     @ManyToOne
     @JoinColumn(columnDefinition = "employee_roles_id", referencedColumnName = "id")
     private EmployeesRoles employeesRoles;

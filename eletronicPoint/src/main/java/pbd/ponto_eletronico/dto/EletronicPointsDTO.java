@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.Id;
+import pbd.ponto_eletronico.enums.OriginType;
 import pbd.ponto_eletronico.serialize.StatusSerialize;
 
 import java.time.LocalDate;
@@ -22,5 +23,5 @@ public record EletronicPointsDTO(
 
         @JsonSerialize(using = StatusSerialize.class)
         Integer status,
-
+        OriginType origin,
         @JsonIgnoreProperties({"id"}) EmployeesRolesDTO employeesRoles)  {}

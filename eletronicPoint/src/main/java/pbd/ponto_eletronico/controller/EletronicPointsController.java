@@ -1,6 +1,7 @@
 package pbd.ponto_eletronico.controller;
 
 import pbd.ponto_eletronico.dto.EletronicPointsDTO;
+import pbd.ponto_eletronico.enums.OriginType;
 import pbd.ponto_eletronico.request.EletronicPointsPutRequest;
 import pbd.ponto_eletronico.service.EletronicPointsService;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,24 @@ public class EletronicPointsController {
     public ResponseEntity<EletronicPointsDTO> findByID(@PathVariable Long id) {
         return ResponseEntity.ok(eletronicPointsService.findById(id));
     }
+    @GetMapping(path = "/originType/{originType}")
+    public ResponseEntity<List<EletronicPointsDTO>>findByID(@PathVariable OriginType originType) {
+        return ResponseEntity.ok(eletronicPointsService.findByOrigin(originType));
+    }
+    @GetMapping(path = "/status/{status}")
+    public ResponseEntity<List<EletronicPointsDTO>> findByStatus(@PathVariable Integer status) {
+        return ResponseEntity.ok(eletronicPointsService.findByStatus(status));
+    }
 
     @GetMapping(path = "/cpf/{cpf}")
     public ResponseEntity<List<EletronicPointsDTO>> findByEmployee(@PathVariable String cpf) {
         return ResponseEntity.ok(eletronicPointsService.findByEmployee(cpf));
     }
 
+    @GetMapping(path = "/sectorName/{sectorName}")
+    public ResponseEntity<List<EletronicPointsDTO>> findBySector(@PathVariable String sectorName) {
+        return ResponseEntity.ok(eletronicPointsService.findBySector(sectorName));
+    }
     @GetMapping(path = "/cnpj/{cnpj}")
     public ResponseEntity<List<EletronicPointsDTO>> findByCompany(@PathVariable String cnpj) {
         return ResponseEntity.ok(eletronicPointsService.findByCompany(cnpj));

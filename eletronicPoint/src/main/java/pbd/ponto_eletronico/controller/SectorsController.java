@@ -39,6 +39,11 @@ public class SectorsController {
         return  ResponseEntity.ok(sectorsService.findByName(name));
     }
 
+    @GetMapping(path = "/name/{name}/cnpj/{cnpj}")
+    public ResponseEntity<List<SectorsDTO>> findByNameAndCnpj(@PathVariable String name, @PathVariable String cnpj) {
+        return  ResponseEntity.ok(sectorsService.findByNameAndCnpj(name, cnpj));
+    }
+
 //    @GetMapping(path = "/sectorsName/{name}")
 //    public ResponseEntity<List<RoleDTO>> findAllRolesInSector(@PathVariable String name) {
 //        return  ResponseEntity.ok(sectorsService.findAllRolesInSector(name));

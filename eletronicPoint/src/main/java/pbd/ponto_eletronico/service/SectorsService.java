@@ -3,7 +3,6 @@ package pbd.ponto_eletronico.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pbd.ponto_eletronico.dto.RoleDTO;
 import pbd.ponto_eletronico.dto.SectorsDTO;
 import pbd.ponto_eletronico.entity.Company;
 import pbd.ponto_eletronico.entity.Sectors;
@@ -23,8 +22,6 @@ import java.util.Optional;
 public class SectorsService {
     private final SectorsRepository sectorsRepository;
     private final SectorsMapper sectorsMapper;
-
-//    private final RoleService roleService;
     private final RoleMapper roleMapper;
 
     private final CompanyService companyService;
@@ -48,6 +45,11 @@ public class SectorsService {
 
     public List<SectorsDTO> findByName(String name) {
         List<Sectors> sectorsData = sectorsRepository.findByName(name);
+        return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
+    }
+
+    public List<SectorsDTO> findByNameAndCnpj(String name, String cnpj) {
+        List<Sectors> sectorsData = sectorsRepository.findByNameAndCompany_Cnpj(name, cnpj);
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
 

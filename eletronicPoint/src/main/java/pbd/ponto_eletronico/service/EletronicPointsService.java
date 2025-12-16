@@ -1,15 +1,21 @@
 package pbd.ponto_eletronico.service;
 
 import pbd.ponto_eletronico.dto.EletronicPointsDTO;
+import pbd.ponto_eletronico.dto.EletronicPointsArchiveDTO;
 import pbd.ponto_eletronico.entity.EletronicPoints;
+import pbd.ponto_eletronico.entity.EletronicPointsArchive;
 import pbd.ponto_eletronico.entity.EmployeesRoles;
+import pbd.ponto_eletronico.enums.EletronicPointArchiveStatus;
 import pbd.ponto_eletronico.enums.OriginType;
 import pbd.ponto_eletronico.enums.RosterType;
 import pbd.ponto_eletronico.exception.BadRequestException;
+import pbd.ponto_eletronico.mapper.EletronicPointsArchiveMapper;
 import pbd.ponto_eletronico.mapper.EletronicPointsMapper;
 import pbd.ponto_eletronico.mapper.EmployeesRolesMapper;
+import pbd.ponto_eletronico.repository.EletronicPoinstArchiverRepository;
 import pbd.ponto_eletronico.repository.EletronicPointsRepository;
 import pbd.ponto_eletronico.repository.EmployeesRolesRepository;
+import pbd.ponto_eletronico.request.EletronicPointsArchivePutRequest;
 import pbd.ponto_eletronico.request.EletronicPointsPostRequest;
 import pbd.ponto_eletronico.request.EletronicPointsPutRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +38,9 @@ public class EletronicPointsService {
     private final EmployeesRolesService employeesRolesService;
     private final EmployeesRolesMapper employeesRolesMapper;
     private final EmployeesRolesRepository employeesRolesRepository;
+    private final EletronicPointsArchiveService eletronicPointsArchiveService;
+    private final EletronicPointsArchiveMapper eletronicPointsArchiveMapper;
+    private final EletronicPoinstArchiverRepository eletronicPoinstArchiverRepository;
 
     public List<EletronicPointsDTO> listAll() {
         List<EletronicPoints> eletronicPoints = eletronicPointsRepository.findAll();
@@ -43,6 +52,7 @@ public class EletronicPointsService {
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData.
                 orElseThrow(() -> new BadRequestException("Id Not Found")));
     }
+
     public List<EletronicPointsDTO> findByOrigin(OriginType origin){
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByOrigin(origin);
         if(eletronicPointsData.isEmpty()){
@@ -50,6 +60,7 @@ public class EletronicPointsService {
         }
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
     }
+
     public List<EletronicPointsDTO> findByStatus(Integer status){
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByStatus(status);
         if(eletronicPointsData.isEmpty()){
@@ -77,6 +88,7 @@ public class EletronicPointsService {
 
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
     }
+
     public List<EletronicPointsDTO> findByCompany(String cnpj){
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Role_Sectors_Company_Cnpj(cnpj);
         if (eletronicPointsData.isEmpty()) {
@@ -84,7 +96,6 @@ public class EletronicPointsService {
         }
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
     }
-
 
     public List<EletronicPointsDTO> findByBate(LocalDate localDate){
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByStartDate(localDate);
@@ -115,6 +126,35 @@ public class EletronicPointsService {
         }else {
             return registerNewEletronicPoint(employeeRolesId);
         }
+    }
+
+    public EletronicPointsDTO saveImportedPointsById(Long id) {
+        EletronicPointsArchive eletronicPointsArchiveData = eletronicPointsArchiveMapper.eletronicPointsArchiveDTOToEletronicPointsArchive(eletronicPointsArchiveService.findById(id));
+        EmployeesRoles employeesRolesData = employeesRolesMapper.toEmployeesRoles(employeesRolesService.findById(eletronicPointsArchiveData.getEmployeesRolesId()));
+
+        if (!(eletronicPointsArchiveData.getStatusArchive() == EletronicPointArchiveStatus.Pendente)) {
+            throw new BadRequestException("This object cannot be saved in the database.");
+        }
+
+        EletronicPoints eletronicPointsData = eletronicPointsMapper.eletronicPointsArchiveToEletronicPoints(eletronicPointsArchiveData);
+        eletronicPointsData.setStatus(eletronicPointsArchiveData.getStatusEletronicPoint());
+        eletronicPointsData.setEmployeesRoles(employeesRolesData);
+
+        eletronicPointsArchiveData.setStatusArchive(EletronicPointArchiveStatus.Validado);
+        eletronicPointsArchiveService.replace(new EletronicPointsArchivePutRequest(id, eletronicPointsArchiveMapper.eletronicPointsArchiveToEletronicPointsArchiveDTO(eletronicPointsArchiveData)));
+        return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsRepository.save(eletronicPointsData));
+    }
+
+    public List<EletronicPointsDTO> saveImportedPointsByFileBatch(String fileBatch) {
+        List<EletronicPointsArchive> eletronicPointsArchives = eletronicPoinstArchiverRepository.findByFileBatch(fileBatch);
+        List<EletronicPointsDTO> listVisualisationSavedObjects = new ArrayList<>();
+        for (EletronicPointsArchive eletronicPointsArchiveCurrent : eletronicPointsArchives) {
+            if (eletronicPointsArchiveCurrent.getStatusArchive() == EletronicPointArchiveStatus.Pendente) {
+                EletronicPointsDTO eletronicPointsDTOCurrent = saveImportedPointsById(eletronicPointsArchiveCurrent.getId());
+                listVisualisationSavedObjects.add(eletronicPointsDTOCurrent);
+            }
+        }
+        return listVisualisationSavedObjects;
     }
 
     public EletronicPointsDTO replace(Long eletronicPointsId, Long employeesRolesId, EletronicPointsPutRequest eletronicPointsPutRequest){
@@ -245,5 +285,4 @@ public class EletronicPointsService {
             closeRegister(eletronicPoints);
         }
     }
-
 }

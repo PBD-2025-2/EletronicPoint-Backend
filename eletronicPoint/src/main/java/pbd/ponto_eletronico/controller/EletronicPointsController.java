@@ -1,13 +1,13 @@
 package pbd.ponto_eletronico.controller;
 
-import pbd.ponto_eletronico.dto.EletronicPointsDTO;
-import pbd.ponto_eletronico.enums.OriginType;
-import pbd.ponto_eletronico.request.EletronicPointsPutRequest;
-import pbd.ponto_eletronico.service.EletronicPointsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pbd.ponto_eletronico.dto.EletronicPointsDTO;
+import pbd.ponto_eletronico.enums.OriginType;
+import pbd.ponto_eletronico.request.EletronicPointsPutRequest;
+import pbd.ponto_eletronico.service.EletronicPointsService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,10 +28,12 @@ public class EletronicPointsController {
     public ResponseEntity<EletronicPointsDTO> findByID(@PathVariable Long id) {
         return ResponseEntity.ok(eletronicPointsService.findById(id));
     }
+
     @GetMapping(path = "/originType/{originType}")
     public ResponseEntity<List<EletronicPointsDTO>>findByID(@PathVariable OriginType originType) {
         return ResponseEntity.ok(eletronicPointsService.findByOrigin(originType));
     }
+
     @GetMapping(path = "/status/{status}")
     public ResponseEntity<List<EletronicPointsDTO>> findByStatus(@PathVariable Integer status) {
         return ResponseEntity.ok(eletronicPointsService.findByStatus(status));
@@ -46,6 +48,7 @@ public class EletronicPointsController {
     public ResponseEntity<List<EletronicPointsDTO>> findBySector(@PathVariable String sectorName) {
         return ResponseEntity.ok(eletronicPointsService.findBySector(sectorName));
     }
+
     @GetMapping(path = "/cnpj/{cnpj}")
     public ResponseEntity<List<EletronicPointsDTO>> findByCompany(@PathVariable String cnpj) {
         return ResponseEntity.ok(eletronicPointsService.findByCompany(cnpj));
@@ -60,13 +63,24 @@ public class EletronicPointsController {
     public ResponseEntity<List<EletronicPointsDTO>> findByStartDateAndEndDate(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
         return ResponseEntity.ok(eletronicPointsService.findByStartDateAndEndDate(startDate, endDate));
     }
+
     @PostMapping(path = "/id/{employeesRolesId}")
     public ResponseEntity<EletronicPointsDTO> register(@PathVariable Long employeesRolesId) {
         return new ResponseEntity<>(eletronicPointsService.register(employeesRolesId), HttpStatus.CREATED);
     }
+
+    @PostMapping(path = "/idEletronicPointArchive/{idEletronicPointArchive}")
+    public ResponseEntity<EletronicPointsDTO> saveImportedPointsById(Long id){
+        return new ResponseEntity<>(eletronicPointsService.saveImportedPointsById(id), HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/fileBatch/{fileBatch}")
+    public ResponseEntity<List<EletronicPointsDTO>> saveImportedPointsById(String fileBatch){
+        return new ResponseEntity<>(eletronicPointsService.saveImportedPointsByFileBatch(fileBatch), HttpStatus.CREATED);
+    }
+
     @PutMapping(path = "/id/{eletronicPointsId}")
     public ResponseEntity<EletronicPointsDTO> replace (@PathVariable Long eletronicPointsId,@RequestBody Long employeesRolesId, @RequestBody EletronicPointsPutRequest eletronicPointsPutRequest){
         return new ResponseEntity<>(eletronicPointsService.replace(eletronicPointsId,employeesRolesId, eletronicPointsPutRequest), HttpStatus.NO_CONTENT);
     }
-
 }

@@ -3,4 +3,4 @@ package pbd.ponto_eletronico.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record SectorsDTO(Long id, String name, CompanyEmbeddedDTO company) {}
+public record SectorsDTO(Long id, String name, CompanyDTO company) {}

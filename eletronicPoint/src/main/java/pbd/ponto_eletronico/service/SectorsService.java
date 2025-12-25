@@ -48,19 +48,21 @@ public class SectorsService {
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
 
-    public List<SectorsDTO> findByNameAndCnpj(String name, String cnpj) {
-        List<Sectors> sectorsData = sectorsRepository.findByNameAndCompany_Cnpj(name, cnpj);
+    public List<SectorsDTO> findByCnpj(String cnpj) {
+        List<Sectors> sectorsData = sectorsRepository.findByCompany_Cnpj(cnpj);
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
 
-//    public List<RoleDTO> findAllRolesInSector(String name) {
-//        return roleService.listAll().stream().filter(roleDTO -> roleDTO.sectors().name().equals(name)).toList();
-//    }
+    public List<SectorsDTO> findByNameAndCompanyId(String name, Long companyId) {
+        List<Sectors> sectorsData = sectorsRepository.findByNameAndCompany_Id(name, companyId);
+        return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
+    }
 
     @Transactional
     public Sectors save(SectorsPostRequest sectorsPostRequest) {
         Company companyData = companyMapper.toCompany(companyService.findById(sectorsPostRequest.companyId()));
         Sectors sectorsData = sectorsMapper.sectorsPostRequestToSectors(sectorsPostRequest);
+
         sectorsData.setCompany(companyData);
         return sectorsRepository.save(sectorsData);
     }

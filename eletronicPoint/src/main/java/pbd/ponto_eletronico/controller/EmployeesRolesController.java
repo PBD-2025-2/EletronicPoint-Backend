@@ -34,6 +34,11 @@ public class EmployeesRolesController {
         return ResponseEntity.ok(employeesRolesService.findByEmployee(cpf));
     }
 
+    @GetMapping(path = "name/{name}")
+    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeName(@PathVariable String name){
+        return ResponseEntity.ok(employeesRolesService.findByEmployeeName(name));
+    }
+
     @GetMapping(path = "cpf/{cpf}/roleName/{roleName}")
     public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeRole(@PathVariable String cpf, @PathVariable String roleName){
         return ResponseEntity.ok(employeesRolesService.findByEmployeeRole(cpf, roleName));

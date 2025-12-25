@@ -50,6 +50,11 @@ public class EmployeesRolesService {
         return employeesRolesMapper.toEmployeesRolesDtos(employeesRolesData);
     }
 
+    public List<EmployeesRolesDTO> findByEmployeeName(String name) {
+        List<EmployeesRoles> employeesRolesData = employeesRolesRepository.findByEmployeeName(name);
+        return employeesRolesMapper.toEmployeesRolesDtos(employeesRolesData);
+    }
+
     public List<EmployeesRolesDTO> findByEmployeeRole(String cpf, String roleName){
         List<EmployeesRoles> employeesRolesData = employeesRolesMapper.toEmployeesRoles(findByEmployee(cpf));
         List<EmployeesRoles> filterRolesName = employeesRolesData.stream()

@@ -43,8 +43,21 @@ public class RoleService {
         return roleMapper.toRoleDtos(roleData);
     }
 
-    public List<RoleDTO> findBySector(String sectorName){
-        List<Role> rolesData = roleRepository.findBySectors_Name(sectorName);
+    public List<RoleDTO> findByCnpj(String cnpj){
+        List<Role> rolesData = roleRepository.findBySectors_Company_Cnpj(cnpj);
+
+        if (rolesData.isEmpty()) {
+            throw new BadRequestException("There are no roles openings at this company.");
+        }
+        return roleMapper.toRoleDtos(rolesData);
+    }
+
+    public List<RoleDTO> findByRoleNameAndCompanyId(String name, Long id){
+        List<Role> rolesData = roleRepository.findByNameAndSectors_Company_Id(name, id);
+
+        if (rolesData.isEmpty()) {
+            throw new BadRequestException("There are no roles openings at this company.");
+        }
         return roleMapper.toRoleDtos(rolesData);
     }
 

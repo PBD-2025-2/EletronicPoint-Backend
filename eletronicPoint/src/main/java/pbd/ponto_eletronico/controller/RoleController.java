@@ -35,8 +35,13 @@ public class RoleController {
     }
 
     @GetMapping(path = "/cnpj/{cnpj}")
-    public ResponseEntity<List<RoleDTO>> findBySectorName(@PathVariable String sector) {
-        return  ResponseEntity.ok(roleService.findBySector(sector));
+    public ResponseEntity<List<RoleDTO>> findByCnpj(@PathVariable String cnpj) {
+        return  ResponseEntity.ok(roleService.findByCnpj(cnpj));
+    }
+
+    @GetMapping(path = "roleName/{name}/companyId/{id}")
+    public ResponseEntity<List<RoleDTO>> findByRoleNameAndCompanyId(@PathVariable String name, @PathVariable Long id) {
+        return  ResponseEntity.ok(roleService.findByRoleNameAndCompanyId(name, id));
     }
 
     @GetMapping(path = "/rolename/{name}/sectorName/{sectorName}")

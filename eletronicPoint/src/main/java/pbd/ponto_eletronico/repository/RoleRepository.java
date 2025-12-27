@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
     List<Role> findByName(String name);
+    List<Role> findByNameAndSectors_Company_Id(String name, Long id);
+    List<Role> findBySectors_Company_Cnpj(String cnpj);
     Boolean existsRoleByNameAndSectors(String name, Sectors sector);
-    List<Role> findBySectors_Name(String sectorName);
 }

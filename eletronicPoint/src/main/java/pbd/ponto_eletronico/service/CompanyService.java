@@ -27,22 +27,31 @@ public class CompanyService {
 
     public List<CompanyDTO> findAll(){
         List<Company> companies = companyRepository.findAll();
+        if(companies.isEmpty()){
+            throw new BadRequestException("No companies found, please register!");
+        }
         return companyMapper.toCompanyDtos(companies);
     }
 
     public CompanyDTO findById(Long id){
         Optional<Company> company = companyRepository.findById(id);
         return companyMapper.toCompanyDto(company
-                    .orElseThrow(() -> new BadRequestException("Id Not Found")));
+                    .orElseThrow(() -> new BadRequestException("No companies found with this ID!")));
     }
 
     public List<CompanyDTO> findByName(String name) {
         List<Company> companies = companyRepository.findByName(name);
+        if(companies.isEmpty()){
+            throw new BadRequestException("No companies found with this name!");
+        }
         return companyMapper.toCompanyDtos(companies);
     }
 
     public List<CompanyDTO> findByCnpj(String cnpj) {
         List<Company> companies = companyRepository.findByCnpj(cnpj);
+        if(companies.isEmpty()){
+            throw new BadRequestException("No companies found with this CNPJ!");
+        }
         return companyMapper.toCompanyDtos(companies);
     }
 

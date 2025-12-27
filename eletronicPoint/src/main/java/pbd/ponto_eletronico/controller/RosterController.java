@@ -33,7 +33,7 @@ public class RosterController {
     }
 
     @GetMapping(path = "/name/{name}")
-    public ResponseEntity<RosterDTO> findByName(@PathVariable String name){
+    public ResponseEntity<List<RosterDTO>> findByName(@PathVariable String name){
         return ResponseEntity.ok(rosterService.findByName(name));
     }
 

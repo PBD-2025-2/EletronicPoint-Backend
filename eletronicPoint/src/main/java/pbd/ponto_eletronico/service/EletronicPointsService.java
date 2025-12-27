@@ -1,7 +1,6 @@
 package pbd.ponto_eletronico.service;
 
 import pbd.ponto_eletronico.dto.EletronicPointsDTO;
-import pbd.ponto_eletronico.dto.EletronicPointsArchiveDTO;
 import pbd.ponto_eletronico.entity.EletronicPoints;
 import pbd.ponto_eletronico.entity.EletronicPointsArchive;
 import pbd.ponto_eletronico.entity.EmployeesRoles;
@@ -44,19 +43,22 @@ public class EletronicPointsService {
 
     public List<EletronicPointsDTO> listAll() {
         List<EletronicPoints> eletronicPoints = eletronicPointsRepository.findAll();
+        if(eletronicPoints.isEmpty()){
+            throw new BadRequestException("No electronic points found, please register!");
+        }
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPoints);
     }
 
     public EletronicPointsDTO findById(Long id){
         Optional<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findById(id);
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData.
-                orElseThrow(() -> new BadRequestException("Id Not Found")));
+                orElseThrow(() -> new BadRequestException("No electronic points found with this ID!")));
     }
 
     public List<EletronicPointsDTO> findByOrigin(OriginType origin){
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByOrigin(origin);
         if(eletronicPointsData.isEmpty()){
-            throw new BadRequestException("Origin Type Not Found");
+            throw new BadRequestException("No electronic points found with this origin type!");
         }
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
     }
@@ -64,7 +66,7 @@ public class EletronicPointsService {
     public List<EletronicPointsDTO> findByStatus(Integer status){
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByStatus(status);
         if(eletronicPointsData.isEmpty()){
-            throw new BadRequestException("Status Not Found");
+            throw new BadRequestException("No electronic points found with this status!");
         }
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
     }
@@ -73,17 +75,17 @@ public class EletronicPointsService {
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Employee_Cpf(cpf);
 
         if (eletronicPointsData.isEmpty()) {
-            throw new BadRequestException("This employee has no records at the bank");
+            throw new BadRequestException("No electronic points found with this CPF!");
         }
 
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
     }
 
-    public List<EletronicPointsDTO> findBySector(String name){
-        List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Role_Sectors_Name(name);
+    public List<EletronicPointsDTO> findBySector(String sectorName){
+        List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Role_Sectors_Name(sectorName);
 
         if (eletronicPointsData.isEmpty()) {
-            throw new BadRequestException("This employee has no records at the bank");
+            throw new BadRequestException("No electronic points found with this sector sector name!");
         }
 
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
@@ -92,7 +94,7 @@ public class EletronicPointsService {
     public List<EletronicPointsDTO> findByCompany(String cnpj){
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByEmployeesRoles_Role_Sectors_Company_Cnpj(cnpj);
         if (eletronicPointsData.isEmpty()) {
-            throw new BadRequestException("This employee has no records at the bank");
+            throw new BadRequestException("No electronic points found with this CNPJ!");
         }
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
     }
@@ -101,7 +103,7 @@ public class EletronicPointsService {
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByStartDate(localDate);
 
         if (eletronicPointsData.isEmpty()) {
-            throw new BadRequestException("This employee has no records at the date");
+            throw new BadRequestException("No electronic points found with this date!");
         }
 
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);
@@ -111,7 +113,7 @@ public class EletronicPointsService {
         List<EletronicPoints> eletronicPointsData = eletronicPointsRepository.findByStartDateBetween(startDate, endDate);
 
         if (eletronicPointsData.isEmpty()) {
-            throw new BadRequestException("This employee has no records at the period");
+            throw new BadRequestException("No electronic points found with this period!");
         }
 
         return eletronicPointsMapper.toEletronicPointsDto(eletronicPointsData);

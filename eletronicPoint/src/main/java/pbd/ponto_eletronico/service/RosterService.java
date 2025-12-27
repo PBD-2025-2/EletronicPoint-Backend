@@ -25,18 +25,24 @@ public class RosterService {
 
     public List<RosterDTO> findAll() throws JsonProcessingException {
         List<Roster> rosters = rosterRepository.findAll();
+        if(rosters.isEmpty()){
+            throw new BadRequestException("No rosters found, please register!");
+        }
         return rosterMapper.listRostertoRosterDTO(rosters);
     }
 
     public RosterDTO findById(Long id) {
         Optional<Roster> rosterData = rosterRepository.findById(id);
         return rosterMapper.rosterToRosterDTO(rosterData.
-                orElseThrow(() -> new BadRequestException("Id Not Found")));
+                orElseThrow(() -> new BadRequestException("No rosters found with this ID!")));
     }
 
-    public RosterDTO findByName(String name) {
-        Roster rosterData = rosterRepository.findByName(name);
-        return rosterMapper.rosterToRosterDTO(rosterData);
+    public List<RosterDTO> findByName(String name) {
+        List<Roster> rosterData = rosterRepository.findByName(name);
+        if(rosterData.isEmpty()){
+            throw new BadRequestException("No rosters found with this name!");
+        }
+        return rosterMapper.listRostertoRosterDTO(rosterData);
     }
 
     public RosterDTO save(RosterPostRequest rosterPostRequest){

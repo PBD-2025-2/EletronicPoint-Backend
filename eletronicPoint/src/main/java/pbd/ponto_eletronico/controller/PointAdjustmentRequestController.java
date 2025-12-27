@@ -27,9 +27,14 @@ public class PointAdjustmentRequestController {
         return ResponseEntity.ok(pointAdjustmentRequestService.findById(id));
     }
     @GetMapping (path = "/status/{status}")
-    public ResponseEntity<PointAdjustmentRequestDTO> findByStatus(@PathVariable StatusType status){
+    public ResponseEntity<List<PointAdjustmentRequestDTO>> findByStatus(@PathVariable StatusType status){
         return ResponseEntity.ok(pointAdjustmentRequestService.findByStatus(status));
     }
+    @GetMapping (path = "/eletronicPointsId/{eletronicPointsId}")
+    public ResponseEntity<List<PointAdjustmentRequestDTO>> findByEletronicPointsId(@PathVariable Long eletronicPointsId){
+        return ResponseEntity.ok(pointAdjustmentRequestService.findByEletronicPoints(eletronicPointsId));
+    }
+
     @PostMapping (path = "/id/{eletronicPointId}")
     public ResponseEntity<PointAdjustmentRequest> save(@RequestBody PointAdjustmentRequestPostRequest pointAdjustmentRequestPostRequest, @PathVariable Long eletronicPointId){
         return new ResponseEntity<>((pointAdjustmentRequestService.save(pointAdjustmentRequestPostRequest, eletronicPointId)), HttpStatus.CREATED);

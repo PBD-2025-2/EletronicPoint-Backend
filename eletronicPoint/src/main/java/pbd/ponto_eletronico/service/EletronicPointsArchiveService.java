@@ -92,7 +92,7 @@ public class EletronicPointsArchiveService {
         List<EletronicPointsArchive> eletronicPointsArchivesData = eletronicPoinstArchiverRepository.findAll();
 
         if (eletronicPointsArchivesData.isEmpty()) {
-            throw new BadRequestException("There are no data in the database.");
+            throw new BadRequestException("No electronic points archive found, please register!");
         }
 
         return eletronicPointsArchiveMapper.listEletronicPointsArchiveToListEletronicPointsArchiveDTO(eletronicPointsArchivesData);
@@ -100,14 +100,14 @@ public class EletronicPointsArchiveService {
 
     public EletronicPointsArchiveDTO findById(Long id) {
         Optional<EletronicPointsArchive> eletronicPointsArchiveData = eletronicPoinstArchiverRepository.findById(id);
-        return eletronicPointsArchiveMapper.eletronicPointsArchiveToEletronicPointsArchiveDTO(eletronicPointsArchiveData.orElseThrow(() -> new BadRequestException("Id not found")));
+        return eletronicPointsArchiveMapper.eletronicPointsArchiveToEletronicPointsArchiveDTO(eletronicPointsArchiveData.orElseThrow(() -> new BadRequestException("No electronic points archive found with this ID!")));
     }
 
     public List<EletronicPointsArchiveDTO> findByFileBatch(String fileBatch) {
         List<EletronicPointsArchive> eletronicPointsArchivesData = eletronicPoinstArchiverRepository.findByFileBatch(fileBatch);
 
         if (eletronicPointsArchivesData.isEmpty()) {
-            throw new BadRequestException("This batch of files does not exist in the database.");
+            throw new BadRequestException("No electronic points archive found with this file batch!");
         }
 
         return eletronicPointsArchiveMapper.listEletronicPointsArchiveToListEletronicPointsArchiveDTO(eletronicPointsArchivesData);
@@ -117,7 +117,15 @@ public class EletronicPointsArchiveService {
         List<EletronicPointsArchive> eletronicPointsArchivesData = eletronicPoinstArchiverRepository.findByStatusArchive(statusArchive);
 
         if (eletronicPointsArchivesData.isEmpty()) {
-            throw new BadRequestException("This status archive does not exist in the database.");
+            throw new BadRequestException("No electronic points archive found with this status archive!");
+        }
+
+        return eletronicPointsArchiveMapper.listEletronicPointsArchiveToListEletronicPointsArchiveDTO(eletronicPointsArchivesData);
+    }
+    public List<EletronicPointsArchiveDTO> findByEmployeesRoles(Long employeesRolesId) {
+        List<EletronicPointsArchive> eletronicPointsArchivesData = eletronicPoinstArchiverRepository.findByEmployeesRolesId(employeesRolesId);
+                if (eletronicPointsArchivesData.isEmpty()) {
+            throw new BadRequestException("No electronic points archive found with this status archive!");
         }
 
         return eletronicPointsArchiveMapper.listEletronicPointsArchiveToListEletronicPointsArchiveDTO(eletronicPointsArchivesData);

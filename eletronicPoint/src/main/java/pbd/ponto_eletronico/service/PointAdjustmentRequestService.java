@@ -27,19 +27,28 @@ public class PointAdjustmentRequestService {
     public List<PointAdjustmentRequestDTO> findAll(){
         List<PointAdjustmentRequest> pointAdjustmentRequestData = pointAdjustmentRequestRepository.findAll();
         if(pointAdjustmentRequestData.isEmpty()){
-            throw new BadRequestException("there are no Request from point adjustment");
+            throw new BadRequestException("No point adjustment request found, please register!");
         }
         return pointAdjustmentRequestMapper.listPointAdjustmentRequestToListPointAdjustmentRequestDTO(pointAdjustmentRequestData);
     }
     public PointAdjustmentRequestDTO findById(Long id){
         Optional<PointAdjustmentRequest> pointAdjustmentRequestData = pointAdjustmentRequestRepository.findById(id);
         return pointAdjustmentRequestMapper.pointAdjustmentRequestToPointAdjustmentRequestDTO(pointAdjustmentRequestData.
-                orElseThrow(() -> new BadRequestException("Id Not Found")));
+                orElseThrow(() -> new BadRequestException("No point adjustment request found with this ID!")));
     }
-    public PointAdjustmentRequestDTO findByStatus(StatusType status){
-        Optional<PointAdjustmentRequest> pointAdjustmentRequestData = pointAdjustmentRequestRepository.findByStatus(status);
-        return pointAdjustmentRequestMapper.pointAdjustmentRequestToPointAdjustmentRequestDTO(pointAdjustmentRequestData.
-                orElseThrow(() -> new BadRequestException("Status Not Found")));
+    public List<PointAdjustmentRequestDTO> findByStatus(StatusType status){
+        List<PointAdjustmentRequest> pointAdjustmentRequestData = pointAdjustmentRequestRepository.findByStatus(status);
+        if(pointAdjustmentRequestData.isEmpty()){
+            throw new BadRequestException("No point adjustment request found with this status!");
+        }
+       return pointAdjustmentRequestMapper.listPointAdjustmentRequestToListPointAdjustmentRequestDTO(pointAdjustmentRequestData);
+    }
+    public List<PointAdjustmentRequestDTO> findByEletronicPoints(Long eletronicPointsId){
+        List<PointAdjustmentRequest> pointAdjustmentRequestDTOsData =  pointAdjustmentRequestRepository.findByEletronicPoints_Id(eletronicPointsId);
+        if(pointAdjustmentRequestDTOsData.isEmpty()){
+            throw new BadRequestException("No point adjustment request found with this electronic points id!");
+        }
+        return pointAdjustmentRequestMapper.listPointAdjustmentRequestToListPointAdjustmentRequestDTO(pointAdjustmentRequestDTOsData);
     }
 
     public PointAdjustmentRequest save (PointAdjustmentRequestPostRequest pointAdjustmentRequestPostRequest, Long eletronicPointId){

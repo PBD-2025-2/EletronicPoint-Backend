@@ -22,17 +22,21 @@ public class EletronicPointsArchiveController {
     }
 
     @GetMapping(path = "id/{id}")
-    public ResponseEntity<EletronicPointsArchiveDTO> findById(Long id) {
+    public ResponseEntity<EletronicPointsArchiveDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(eletronicPointsArchiveService.findById(id));
+    }
+    @GetMapping(path = "employeesRolesId/{employeesRolesId}")
+    public ResponseEntity<List<EletronicPointsArchiveDTO>> findByEmployeesRolesId(@PathVariable Long employeesRolesId) {
+        return ResponseEntity.ok(eletronicPointsArchiveService.findByEmployeesRoles(employeesRolesId));
     }
 
     @GetMapping(path = "fileBatch/{fileBatch}")
-    public ResponseEntity<List<EletronicPointsArchiveDTO>> findByFileBatch(String fileBatch) {
+    public ResponseEntity<List<EletronicPointsArchiveDTO>> findByFileBatch(@PathVariable String fileBatch) {
         return ResponseEntity.ok(eletronicPointsArchiveService.findByFileBatch(fileBatch));
     }
 
     @GetMapping(path = "statusArchive/{statusArchive}")
-    public ResponseEntity<List<EletronicPointsArchiveDTO>> findByFileBatch(EletronicPointArchiveStatus statusArchive) {
+    public ResponseEntity<List<EletronicPointsArchiveDTO>> findByFileBatch(@PathVariable EletronicPointArchiveStatus statusArchive) {
         return ResponseEntity.ok(eletronicPointsArchiveService.findByStatusArchive(statusArchive));
     }
 

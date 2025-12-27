@@ -90,11 +90,16 @@ public class EmployeesRolesService {
 
     public EmployeesRoles replace(Long id, EmployeesRolesPutRequest employeeRolesPutRequest){
         EmployeesRoles employeesRoles = employeesRolesMapper.toEmployeesRoles(findById(id));
+        Roster rosterData = rosterMapper.rosterDTOToRoster(rosterService.findById(employeeRolesPutRequest.idRoster()));
         Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeeRolesPutRequest.employeeId()));
+        Role roleData = roleMapper.toRole(roleService.findById(employeeRolesPutRequest.roleId()));
         EmployeesRoles employeesRolesReplace = employeesRolesMapper.toEmployeesRolesPut(employeeRolesPutRequest);
+
         employeesRolesReplace.setId(employeesRoles.getId());
+        employeesRolesReplace.setRoster(rosterData);
+        employeesRolesReplace.setRole(roleData);
         employeesRolesReplace.setEmployee(employeeData);
-        employeesRolesReplace.setRole(employeesRoles.getRole());
+
         return employeesRolesRepository.save(employeesRolesReplace);
     }
 

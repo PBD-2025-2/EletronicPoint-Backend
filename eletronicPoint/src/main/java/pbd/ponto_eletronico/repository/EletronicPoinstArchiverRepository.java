@@ -9,4 +9,6 @@ import java.util.List;
 public interface EletronicPoinstArchiverRepository extends JpaRepository<EletronicPointsArchive, Long> {
     List<EletronicPointsArchive> findByFileBatch(String fileBatch);
     List<EletronicPointsArchive> findByStatusArchive(EletronicPointArchiveStatus fileBatch);
+
+    List<EletronicPointsArchive> findByEmployeesRolesId(Long employeesRolesId);
 }

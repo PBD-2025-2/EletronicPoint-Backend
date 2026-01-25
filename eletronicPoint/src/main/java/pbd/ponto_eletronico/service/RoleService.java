@@ -30,33 +30,46 @@ public class RoleService {
 
     public List<RoleDTO> listAll(){
         List<Role> roles = roleRepository.findAll();
+        if(roles.isEmpty()){
+            throw new BadRequestException("No roles found, please register!");
+        }
         return roleMapper.toRoleDtos(roles);
     }
 
     public RoleDTO findById(Long id) {
         Optional<Role> roleData = roleRepository.findById(id);
-        return roleMapper.toRoleDto(roleData.orElseThrow(() -> new BadRequestException("Id not Found")));
+        return roleMapper.toRoleDto(roleData.orElseThrow(() -> new BadRequestException("No roles found with this ID!")));
     }
 
     public List<RoleDTO> findByName(String name) {
         List<Role> roleData = roleRepository.findByName(name);
+        if(roleData.isEmpty()){
+            throw new BadRequestException("No roles found with this name!");
+        }
         return roleMapper.toRoleDtos(roleData);
     }
 
-    public List<RoleDTO> findByCnpj(String cnpj){
-        List<Role> rolesData = roleRepository.findBySectors_Company_Cnpj(cnpj);
-
-        if (rolesData.isEmpty()) {
-            throw new BadRequestException("There are no roles openings at this company.");
+    public List<RoleDTO> findByRoleNameAndCompanyId(String roleName, Long companyId){
+        List<Role> rolesData = roleRepository.findByNameAndSectors_Company_Id(roleName, companyId);
+        if(rolesData.isEmpty()){
+            throw new BadRequestException("No roles found with this sector name!");
         }
         return roleMapper.toRoleDtos(rolesData);
     }
 
-    public List<RoleDTO> findByRoleNameAndCompanyId(String name, Long id){
-        List<Role> rolesData = roleRepository.findByNameAndSectors_Company_Id(name, id);
+    public List<RoleDTO> findByCompanyId(Long companyId){
+        List<Role> rolesData = roleRepository.findBySectors_Company_Id(companyId);
 
-        if (rolesData.isEmpty()) {
-            throw new BadRequestException("There are no roles openings at this company.");
+        if(rolesData.isEmpty()){
+            throw new BadRequestException("No roles found with this sector name!");
+        }
+        return roleMapper.toRoleDtos(rolesData);
+    }
+
+    public List<RoleDTO> findByCompanyCnpj(String companyCnpj){
+        List<Role> rolesData = roleRepository.findBySectors_Company_Cnpj(companyCnpj);
+        if(rolesData.isEmpty()){
+            throw new BadRequestException("No roles found with this sector name!");
         }
         return roleMapper.toRoleDtos(rolesData);
     }
@@ -66,7 +79,7 @@ public class RoleService {
         List<RoleDTO> filterBySectorName = rolesData.stream().filter(
                 roles -> roles.sectors().name().equalsIgnoreCase(sectorName)).toList();
         if(filterBySectorName.isEmpty()){
-            throw new BadRequestException("This role not exists in this company");
+            throw new BadRequestException("No roles found with this sector name!");
         }
         return filterBySectorName;
 

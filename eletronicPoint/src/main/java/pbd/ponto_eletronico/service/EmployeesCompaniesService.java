@@ -29,23 +29,32 @@ public class EmployeesCompaniesService {
 
     public List<EmployeesCompaniesDTO> findAll(){
         List<EmployeesCompanies> employeesCompanies = employeesCompaniesRepository.findAll();
+        if(employeesCompanies.isEmpty()){
+            throw new BadRequestException("No employee companies found, please register!");
+        }
         return employeesCompaniesMapper.toEmployeesCompaniesDtos(employeesCompanies);
     }
 
     public EmployeesCompaniesDTO findById(Long id) {
         Optional<EmployeesCompanies> employeesCompaniesData = employeesCompaniesRepository.findById(id);
         return employeesCompaniesMapper.toEmployeesCompaniesDto(employeesCompaniesData
-                .orElseThrow(() -> new BadRequestException("Id not Found")));
+                .orElseThrow(() -> new BadRequestException("No employees companies found with this ID!")));
     }
 
     public List<EmployeesCompaniesDTO> findByEmployee(String cpf) {
         List<Employee> employeesData = employeeMapper.toEmployees(employeeService.findByCpf(cpf));
+        if(employeesData.isEmpty()){
+            throw new BadRequestException("No employees companies found with this cpf!");
+        }
         List<EmployeesCompanies> employeesCompaniesData = employeesCompaniesRepository.findByEmployee(employeesData.getFirst());
         return employeesCompaniesMapper.toEmployeesCompaniesDtos(employeesCompaniesData);
     }
 
     public List<EmployeesCompaniesDTO> findByCompany(String cnpj) {
         List<Company> companiesData = companyMapper.toCompanies(companyService.findByCnpj(cnpj));
+        if(companiesData.isEmpty()){
+            throw new BadRequestException("No employees companies found with this CNPJ!");
+        }
         List<EmployeesCompanies> employeesCompaniesData = employeesCompaniesRepository.findByCompany(companiesData.getFirst());
         return employeesCompaniesMapper.toEmployeesCompaniesDtos(employeesCompaniesData);
     }

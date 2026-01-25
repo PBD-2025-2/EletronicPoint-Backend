@@ -24,23 +24,32 @@ public class EmployeeService {
     private final EmployeeMapper employeeMapper;
 
     public List<EmployeeDTO> findAll(){
-        List<Employee> employees = employeeRepository.findAll();
-        return employeeMapper.toEmployeeDtos(employees);
+        List<Employee> employeesData = employeeRepository.findAll();
+        if(employeesData.isEmpty()){
+            throw new BadRequestException("No employees found, please register!");
+        }
+        return employeeMapper.toEmployeeDtos(employeesData);
     }
 
     public EmployeeDTO findById(Long id) {
         Optional<Employee> employeeData = employeeRepository.findById(id);
         return employeeMapper.toEmployeeDto(employeeData
-                .orElseThrow(() -> new BadRequestException("Id not Found")));
+                .orElseThrow(() -> new BadRequestException("No employees found with this ID!")));
     }
 
     public List<EmployeeDTO> findByName(String name) {
-        List<Employee> employees = employeeRepository.findByName(name);
-        return employeeMapper.toEmployeeDtos(employees);
+        List<Employee> employeesData = employeeRepository.findByName(name);
+        if(employeesData.isEmpty()){
+            throw new BadRequestException("No employees found with this name!");
+        }
+        return employeeMapper.toEmployeeDtos(employeesData);
     }
 
     public List<EmployeeDTO> findByCpf(String cpf) {
         List<Employee> employees = employeeRepository.findByCpf(cpf);
+        if(employees.isEmpty()){
+            throw new BadRequestException("No employees found with this CPF!");
+        }
         return employeeMapper.toEmployeeDtos(employees);
     }
 

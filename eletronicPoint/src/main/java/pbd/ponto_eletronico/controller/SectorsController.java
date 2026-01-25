@@ -39,14 +39,14 @@ public class SectorsController {
         return  ResponseEntity.ok(sectorsService.findByName(name));
     }
 
-    @GetMapping(path = "/cnpj/{cnpj}")
-    public ResponseEntity<List<SectorsDTO>> findByCnpj(@PathVariable String cnpj) {
-        return  ResponseEntity.ok(sectorsService.findByCnpj(cnpj));
+    @GetMapping(path = "/companyId/{id}")
+    public ResponseEntity<List<SectorsDTO>> findByCompanyId(@PathVariable Long id) {
+        return  ResponseEntity.ok(sectorsService.findByCompanyId(id));
     }
 
-    @GetMapping(path = "/name/{name}/companyId/{companyId}")
-    public ResponseEntity<List<SectorsDTO>> findByNameAndCompanyId(@PathVariable String name, @PathVariable Long companyId) {
-        return  ResponseEntity.ok(sectorsService.findByNameAndCompanyId(name, companyId));
+    @GetMapping(path = "/name/{name}/companyId/{id}")
+    public ResponseEntity<List<SectorsDTO>> findByNameAndCompanyId(@PathVariable String name, @PathVariable Long id) {
+        return  ResponseEntity.ok(sectorsService.findByNameAndCompanyId(name, id));
     }
 
     @PostMapping

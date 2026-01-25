@@ -22,7 +22,6 @@ import java.util.Optional;
 public class SectorsService {
     private final SectorsRepository sectorsRepository;
     private final SectorsMapper sectorsMapper;
-    private final RoleMapper roleMapper;
 
     private final CompanyService companyService;
     private final CompanyMapper companyMapper;
@@ -31,7 +30,7 @@ public class SectorsService {
         List<Sectors> sectorsData = sectorsRepository.findAll();
 
         if (sectorsData.isEmpty()) {
-            throw  new BadRequestException("No Sectores in DataBase.");
+            throw  new BadRequestException("No sectors found, please register!");
         }
 
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
@@ -40,21 +39,29 @@ public class SectorsService {
     public SectorsDTO findById(Long id) {
         Optional<Sectors> sectorData = sectorsRepository.findById(id);
         return sectorsMapper.sectorsToSectorsDTO(sectorData
-                .orElseThrow(() -> new BadRequestException("Id not Found")));
+                .orElseThrow(() -> new BadRequestException("No sectors found with this ID!")));
     }
 
     public List<SectorsDTO> findByName(String name) {
         List<Sectors> sectorsData = sectorsRepository.findByName(name);
+        if(sectorsData.isEmpty()){
+            throw new BadRequestException("No sectors found with this name!");
+        }
+        return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
+    }
+    public List<SectorsDTO> findByCompanyId(Long id) {
+        List<Sectors> sectorsData = sectorsRepository.findByCompany_Id(id);
+        if(sectorsData.isEmpty()){
+            throw new BadRequestException("No sectors found with this name!");
+        }
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
 
-    public List<SectorsDTO> findByCnpj(String cnpj) {
-        List<Sectors> sectorsData = sectorsRepository.findByCompany_Cnpj(cnpj);
-        return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
-    }
-
-    public List<SectorsDTO> findByNameAndCompanyId(String name, Long companyId) {
-        List<Sectors> sectorsData = sectorsRepository.findByNameAndCompany_Id(name, companyId);
+    public List<SectorsDTO> findByNameAndCompanyId(String name, Long id) {
+        List<Sectors> sectorsData = sectorsRepository.findByNameAndCompany_Id(name, id);
+        if(sectorsData.isEmpty()){
+            throw new BadRequestException("No sectors found with this CNPJ");
+        }
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
 
@@ -62,7 +69,6 @@ public class SectorsService {
     public Sectors save(SectorsPostRequest sectorsPostRequest) {
         Company companyData = companyMapper.toCompany(companyService.findById(sectorsPostRequest.companyId()));
         Sectors sectorsData = sectorsMapper.sectorsPostRequestToSectors(sectorsPostRequest);
-
         sectorsData.setCompany(companyData);
         return sectorsRepository.save(sectorsData);
     }

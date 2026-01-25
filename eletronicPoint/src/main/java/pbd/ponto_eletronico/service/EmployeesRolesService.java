@@ -35,6 +35,9 @@ public class EmployeesRolesService {
 
     public List<EmployeesRolesDTO> listAll() {
         List<EmployeesRoles> employeesRoles = employeesRolesRepository.findAll();
+        if(employeesRoles.isEmpty()){
+            throw new BadRequestException("Employees Roles not found!");
+        }
         return employeesRolesMapper.toEmployeesRolesDtos(employeesRoles);
     }
 
@@ -44,23 +47,31 @@ public class EmployeesRolesService {
                 orElseThrow(() -> new BadRequestException("Id Not Found")));
     }
 
-    public List<EmployeesRolesDTO> findByEmployee(String cpf){
+    public List<EmployeesRolesDTO> findByEmployeeByCpf(String cpf){
         List<Employee> employeesData = employeeMapper.toEmployees(employeeService.findByCpf(cpf));
+        if(employeesData.isEmpty()){
+            throw new BadRequestException("Employees Roles with this employee not found!");
+        }
         List<EmployeesRoles> employeesRolesData = employeesRolesRepository.findByEmployee(employeesData.getFirst());
         return employeesRolesMapper.toEmployeesRolesDtos(employeesRolesData);
     }
 
-    public List<EmployeesRolesDTO> findByEmployeeName(String name) {
-        List<EmployeesRoles> employeesRolesData = employeesRolesRepository.findByEmployeeName(name);
+    public List<EmployeesRolesDTO> findByEmployeeId(Long id ) {
+        List<EmployeesRoles> employeesRolesData = employeesRolesRepository.findByEmployee_Id(id);
         return employeesRolesMapper.toEmployeesRolesDtos(employeesRolesData);
     }
 
-    public List<EmployeesRolesDTO> findByEmployeeRole(String cpf, String roleName){
-        List<EmployeesRoles> employeesRolesData = employeesRolesMapper.toEmployeesRoles(findByEmployee(cpf));
+    public List<EmployeesRolesDTO> findByEmployeeCpfAndRoleName(String cpf, String roleName){
+        List<EmployeesRoles> employeesRolesData = employeesRolesMapper.toEmployeesRoles(findByEmployeeByCpf(cpf));
+        if(employeesRolesData.isEmpty()){
+            throw new BadRequestException("Employees Roles with this cpf not found!");
+        }
         List<EmployeesRoles> filterRolesName = employeesRolesData.stream()
                         .filter(employeesRoles -> employeesRoles.
                                 getRole().getName().equalsIgnoreCase(roleName)).toList();
-
+        if(filterRolesName.isEmpty()){
+            throw new BadRequestException("Employees Roles with this role name not found!");
+        }
         return employeesRolesMapper.toEmployeesRolesDtos(filterRolesName);
 
     }
@@ -74,7 +85,7 @@ public class EmployeesRolesService {
         if (existEmployeeRole(employeesRolesPostRequest.idRoster(), employeeData, roleData)) {
             throw new BadRequestException("this role is already registered ");
         }
-        List<EmployeesRoles> allRolesEmployee = employeesRolesMapper.toEmployeesRoles(findByEmployee(employeeData.getCpf()));
+        List<EmployeesRoles> allRolesEmployee = employeesRolesMapper.toEmployeesRoles(findByEmployeeByCpf(employeeData.getCpf()));
 
         if(employeesRolesPostRequest.status() && FilterActivesRoles.filterActivesRoles(allRolesEmployee).size() >= 2){
             throw new BadRequestException("employee has two active positions, cannot perform another function");
@@ -93,6 +104,13 @@ public class EmployeesRolesService {
         Roster rosterData = rosterMapper.rosterDTOToRoster(rosterService.findById(employeeRolesPutRequest.idRoster()));
         Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeeRolesPutRequest.employeeId()));
         Role roleData = roleMapper.toRole(roleService.findById(employeeRolesPutRequest.roleId()));
+
+        List<EmployeesRoles> allRolesEmployee = employeesRolesMapper.toEmployeesRoles(findByEmployeeByCpf(employeeData.getCpf()));
+
+        if(employeeRolesPutRequest.status() && FilterActivesRoles.filterActivesRoles(allRolesEmployee).size() >= 2){
+            throw new BadRequestException("employee has two active positions, cannot perform another function");
+        }
+
         EmployeesRoles employeesRolesReplace = employeesRolesMapper.toEmployeesRolesPut(employeeRolesPutRequest);
 
         employeesRolesReplace.setId(employeesRoles.getId());

@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EmployeesRolesRepository extends JpaRepository<EmployeesRoles, Long> {
-
+    List<EmployeesRoles> findByEmployee_Id(Long id);
     List<EmployeesRoles> findByEmployee(Employee employee);
-    List<EmployeesRoles> findByEmployeeName(String name);
     Boolean existsByRoster_IdAndEmployeeAndRole(Long idRoster, Employee employee, Role role);
 }

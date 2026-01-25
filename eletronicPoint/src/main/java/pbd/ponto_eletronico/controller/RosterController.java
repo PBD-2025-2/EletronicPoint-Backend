@@ -44,6 +44,7 @@ public class RosterController {
 
     @PostMapping("/duty")
     public ResponseEntity<?> registerDutySchedule(@RequestBody @Valid RosterDutyPostRequest rosterDutyPostRequest) {
+        System.out.println("RosterDutyPostRequest: " + rosterDutyPostRequest);
         return new ResponseEntity<>(rosterService.save(rosterDutyPostRequest), HttpStatus.CREATED);
     }
 

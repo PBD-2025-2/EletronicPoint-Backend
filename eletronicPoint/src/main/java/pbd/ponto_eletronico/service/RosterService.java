@@ -50,6 +50,7 @@ public class RosterService {
             if (!requestIsValid(diaryPostRequest)) {
                 throw new BadRequestException("Request Invalid");}
         }
+
         Roster roster = new Roster();
         roster.setName(rosterPostRequest.name());
         roster.setWeeklyWorkload(rosterPostRequest.weeklyWorkload());
@@ -73,17 +74,21 @@ public class RosterService {
 
     private void setRosterSchedulesAndType(Roster roster, RosterPostRequest rosterPostRequest){
         roster.setType(rosterPostRequest.type());
+
         if(rosterPostRequest.type() == RosterType.Diaria){
             if(rosterPostRequest instanceof  RosterDiaryPostRequest diaryPostRequest){
-            roster.setSchedules(diaryPostRequest.schedules());}
+                roster.setSchedules(diaryPostRequest.schedules());
+            }
             else if(rosterPostRequest instanceof RosterDiaryPutRequest diaryPutRequest){
                 roster.setSchedules(diaryPutRequest.schedules());
             }
-        }else if(rosterPostRequest.type() == RosterType.Plantão){
+
+        } else if(rosterPostRequest.type() == RosterType.Plantão){
             if(rosterPostRequest instanceof RosterDutyPostRequest dutyPostRequest){
                 roster.setSchedules(dutyPostRequest.schedules());
             }else if(rosterPostRequest instanceof  RosterDutyPutRequest dutyPutRequest)
             roster.setSchedules(dutyPutRequest.schedules());
+
         }else{
             throw new IllegalArgumentException("Type invalid");
         }

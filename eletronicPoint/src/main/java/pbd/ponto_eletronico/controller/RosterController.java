@@ -33,7 +33,7 @@ public class RosterController {
     }
 
     @GetMapping(path = "/name/{name}")
-    public ResponseEntity<RosterDTO> findByName(@PathVariable String name){
+    public ResponseEntity<List<RosterDTO>> findByName(@PathVariable String name){
         return ResponseEntity.ok(rosterService.findByName(name));
     }
 
@@ -44,6 +44,7 @@ public class RosterController {
 
     @PostMapping("/duty")
     public ResponseEntity<?> registerDutySchedule(@RequestBody @Valid RosterDutyPostRequest rosterDutyPostRequest) {
+        System.out.println("RosterDutyPostRequest: " + rosterDutyPostRequest);
         return new ResponseEntity<>(rosterService.save(rosterDutyPostRequest), HttpStatus.CREATED);
     }
 

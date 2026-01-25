@@ -25,18 +25,24 @@ public class RosterService {
 
     public List<RosterDTO> findAll() throws JsonProcessingException {
         List<Roster> rosters = rosterRepository.findAll();
+        if(rosters.isEmpty()){
+            throw new BadRequestException("No rosters found, please register!");
+        }
         return rosterMapper.listRostertoRosterDTO(rosters);
     }
 
     public RosterDTO findById(Long id) {
         Optional<Roster> rosterData = rosterRepository.findById(id);
         return rosterMapper.rosterToRosterDTO(rosterData.
-                orElseThrow(() -> new BadRequestException("Id Not Found")));
+                orElseThrow(() -> new BadRequestException("No rosters found with this ID!")));
     }
 
-    public RosterDTO findByName(String name) {
-        Roster rosterData = rosterRepository.findByName(name);
-        return rosterMapper.rosterToRosterDTO(rosterData);
+    public List<RosterDTO> findByName(String name) {
+        List<Roster> rosterData = rosterRepository.findByName(name);
+        if(rosterData.isEmpty()){
+            throw new BadRequestException("No rosters found with this name!");
+        }
+        return rosterMapper.listRostertoRosterDTO(rosterData);
     }
 
     public RosterDTO save(RosterPostRequest rosterPostRequest){
@@ -44,6 +50,7 @@ public class RosterService {
             if (!requestIsValid(diaryPostRequest)) {
                 throw new BadRequestException("Request Invalid");}
         }
+
         Roster roster = new Roster();
         roster.setName(rosterPostRequest.name());
         roster.setWeeklyWorkload(rosterPostRequest.weeklyWorkload());
@@ -67,17 +74,21 @@ public class RosterService {
 
     private void setRosterSchedulesAndType(Roster roster, RosterPostRequest rosterPostRequest){
         roster.setType(rosterPostRequest.type());
+
         if(rosterPostRequest.type() == RosterType.Diaria){
             if(rosterPostRequest instanceof  RosterDiaryPostRequest diaryPostRequest){
-            roster.setSchedules(diaryPostRequest.schedules());}
+                roster.setSchedules(diaryPostRequest.schedules());
+            }
             else if(rosterPostRequest instanceof RosterDiaryPutRequest diaryPutRequest){
                 roster.setSchedules(diaryPutRequest.schedules());
             }
-        }else if(rosterPostRequest.type() == RosterType.Plantão){
+
+        } else if(rosterPostRequest.type() == RosterType.Plantão){
             if(rosterPostRequest instanceof RosterDutyPostRequest dutyPostRequest){
                 roster.setSchedules(dutyPostRequest.schedules());
             }else if(rosterPostRequest instanceof  RosterDutyPutRequest dutyPutRequest)
             roster.setSchedules(dutyPutRequest.schedules());
+
         }else{
             throw new IllegalArgumentException("Type invalid");
         }

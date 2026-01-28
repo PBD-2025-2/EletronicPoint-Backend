@@ -8,6 +8,6 @@ import java.util.List;
 public record RosterDiaryPutRequest(Long id, String name, int weeklyWorkload, List<DailySchedule> schedules) implements RosterPutRequest {
     @Override
     public RosterType type() {
-        return RosterType.Plantão;
+        return RosterType.Diaria;
     }
 }

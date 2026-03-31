@@ -30,18 +30,18 @@ public class EmployeesRolesController {
     }
 
     @GetMapping(path = "cpf/{cpf}")
-    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployee(@PathVariable String cpf){
-        return ResponseEntity.ok(employeesRolesService.findByEmployee(cpf));
-    }
-
-    @GetMapping(path = "name/{name}")
-    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeName(@PathVariable String name){
-        return ResponseEntity.ok(employeesRolesService.findByEmployeeName(name));
+    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeByCpf(@PathVariable String cpf){
+        return ResponseEntity.ok(employeesRolesService.findByEmployeeByCpf(cpf));
     }
 
     @GetMapping(path = "cpf/{cpf}/roleName/{roleName}")
-    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeRole(@PathVariable String cpf, @PathVariable String roleName){
-        return ResponseEntity.ok(employeesRolesService.findByEmployeeRole(cpf, roleName));
+    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeCpfAndRoleName(@PathVariable String cpf, @PathVariable String roleName){
+        return ResponseEntity.ok(employeesRolesService.findByEmployeeCpfAndRoleName(cpf, roleName));
+    }
+
+    @GetMapping(path = "employeeId/{id}")
+    public ResponseEntity<List<EmployeesRolesDTO>> findByEmployeeId(@PathVariable Long id){
+        return ResponseEntity.ok(employeesRolesService.findByEmployeeId(id));
     }
 
     @PostMapping

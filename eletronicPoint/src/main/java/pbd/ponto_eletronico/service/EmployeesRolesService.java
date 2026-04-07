@@ -48,11 +48,11 @@ public class EmployeesRolesService {
     }
 
     public List<EmployeesRolesDTO> findByEmployeeByCpf(String cpf){
-        List<Employee> employeesData = employeeMapper.toEmployees(employeeService.findByCpf(cpf));
-        if(employeesData.isEmpty()){
+        Employee employeesData = employeeMapper.toEmployee(employeeService.findByCpf(cpf));
+        if(employeesData == null){
             throw new BadRequestException("Employees Roles with this employee not found!");
         }
-        List<EmployeesRoles> employeesRolesData = employeesRolesRepository.findByEmployee(employeesData.getFirst());
+        List<EmployeesRoles> employeesRolesData = employeesRolesRepository.findByEmployee(employeesData);
         return employeesRolesMapper.toEmployeesRolesDtos(employeesRolesData);
     }
 

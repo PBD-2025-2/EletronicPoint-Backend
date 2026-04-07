@@ -42,11 +42,11 @@ public class EmployeesCompaniesService {
     }
 
     public List<EmployeesCompaniesDTO> findByEmployee(String cpf) {
-        List<Employee> employeesData = employeeMapper.toEmployees(employeeService.findByCpf(cpf));
-        if(employeesData.isEmpty()){
+        Employee employeesData = employeeMapper.toEmployee(employeeService.findByCpf(cpf));
+        if(employeesData == null){
             throw new BadRequestException("No employees companies found with this cpf!");
         }
-        List<EmployeesCompanies> employeesCompaniesData = employeesCompaniesRepository.findByEmployee(employeesData.getFirst());
+        List<EmployeesCompanies> employeesCompaniesData = employeesCompaniesRepository.findByEmployee(employeesData);
         return employeesCompaniesMapper.toEmployeesCompaniesDtos(employeesCompaniesData);
     }
 

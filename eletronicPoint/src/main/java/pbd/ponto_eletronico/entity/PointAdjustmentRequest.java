@@ -16,13 +16,15 @@ public class PointAdjustmentRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "justification", nullable = false)
     private String justification;
     @Type(JsonType.class)
-    @Column(name = "details", columnDefinition = "jsonb")
+    @Column(name = "details", columnDefinition = "jsonb", nullable = false)
     private Object details;
+    @Column(name="status", length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusType status;
     @ManyToOne
-    @JoinColumn(columnDefinition = "eletronic_points_id",  referencedColumnName = "id")
+    @JoinColumn(name = "eletronic_points_id", columnDefinition = "bigint",  referencedColumnName = "id")
     private EletronicPoints eletronicPoints;
 }

@@ -5,12 +5,4 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class DutySchedules {
-    private String startTime;
-    private Integer workDuration;
-    private Integer timeOff;
-}
+public record DutySchedules(String startTime, Integer workDuration, Integer timeOff) {}

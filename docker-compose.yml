@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   eureka-server:
     image: eletronicpoint-backend-eureka-server
@@ -31,6 +29,7 @@ services:
     container_name: eletronic-point
     ports:
       - "8181:8181"
+      - "5005:5005"
     depends_on:
       - eureka-server
     networks:
@@ -61,15 +60,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
 
-  frontend:
-    image: eletronicpoint-gui
-    build:
-      context: "C:\\Users\\marce\\OneDrive\\Documentos\\GitHub\\Eletronic-Point-GUI"
-    container_name: frontend
-    ports:
-      - "4200:80"
-    depends_on:
-      - gateway
 networks:
   backend:
     driver: bridge

@@ -20,4 +20,4 @@ COPY --from=build /app/${JAR_FILE} app.jar
 
 EXPOSE 8181
 
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "app.jar"]

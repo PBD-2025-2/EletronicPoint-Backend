@@ -2,6 +2,7 @@ package pbd.ponto_eletronico.controller;
 
 import pbd.ponto_eletronico.dto.EmployeeDTO;
 import pbd.ponto_eletronico.entity.Employee;
+import pbd.ponto_eletronico.enums.GenderType;
 import pbd.ponto_eletronico.request.EmployeePostRequest;
 import pbd.ponto_eletronico.request.EmployeePutRequest;
 import pbd.ponto_eletronico.service.EmployeeService;
@@ -29,14 +30,19 @@ public class EmployeeController {
         return  ResponseEntity.ok(employeeService.findById(id));
     }
 
+    @GetMapping(path = "/cpf/{cpf}")
+    public ResponseEntity<EmployeeDTO> findByCpf(@PathVariable String cpf) {
+        return  ResponseEntity.ok(employeeService.findByCpf(cpf));
+    }
+
     @GetMapping(path = "/name/{name}")
     public ResponseEntity<List<EmployeeDTO>> findByName(@PathVariable String name) {
         return  ResponseEntity.ok(employeeService.findByName(name));
     }
 
-    @GetMapping(path = "/cpf/{cpf}")
-    public ResponseEntity<List<EmployeeDTO>> findByCpf(@PathVariable String cpf) {
-        return  ResponseEntity.ok(employeeService.findByCpf(cpf));
+    @GetMapping(path = "/gender/{gender}")
+    public ResponseEntity<List<EmployeeDTO>> findByGender(@PathVariable GenderType gender) {
+        return  ResponseEntity.ok(employeeService.findByGender(gender));
     }
 
     @PostMapping

@@ -1,8 +1,19 @@
 package pbd.ponto_eletronico.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.math.BigDecimal;
 
 public record RoleDTO (
         Long id,
         String name,
-        SectorsDTO sectors){}
+        String responsibility,
+        BigDecimal baseSalary,
+        SectorsDTO sectors
+
+
+) {
+    public record Summary(
+            Long id,
+            String name,
+            String responsibility
+    ){}
+}

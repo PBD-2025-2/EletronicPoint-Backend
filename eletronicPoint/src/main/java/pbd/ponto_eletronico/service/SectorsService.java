@@ -1,5 +1,6 @@
 package pbd.ponto_eletronico.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import pbd.ponto_eletronico.exception.BadRequestException;
 import pbd.ponto_eletronico.mapper.CompanyMapper;
 import pbd.ponto_eletronico.mapper.RoleMapper;
 import pbd.ponto_eletronico.mapper.SectorsMapper;
+import pbd.ponto_eletronico.repository.CompanyRepository;
 import pbd.ponto_eletronico.repository.SectorsRepository;
 import pbd.ponto_eletronico.request.SectorsPostRequest;
 import pbd.ponto_eletronico.request.SectorsPutRequest;
@@ -25,56 +27,46 @@ public class SectorsService {
 
     private final CompanyService companyService;
     private final CompanyMapper companyMapper;
+    private final CompanyRepository companyRepository;
 
     public List<SectorsDTO> findAll() {
         List<Sectors> sectorsData = sectorsRepository.findAll();
-
-        if (sectorsData.isEmpty()) {
-            throw  new BadRequestException("No sectors found, please register!");
-        }
-
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
 
     public SectorsDTO findById(Long id) {
-        Optional<Sectors> sectorData = sectorsRepository.findById(id);
-        return sectorsMapper.sectorsToSectorsDTO(sectorData
-                .orElseThrow(() -> new BadRequestException("No sectors found with this ID!")));
+        Sectors sectorData = sectorsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sector not found with this ID!"));
+        return sectorsMapper.sectorsToSectorsDTO(sectorData);
     }
 
     public List<SectorsDTO> findByName(String name) {
         List<Sectors> sectorsData = sectorsRepository.findByName(name);
-        if(sectorsData.isEmpty()){
-            throw new BadRequestException("No sectors found with this name!");
-        }
         return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
     }
-    public List<SectorsDTO> findByCompanyId(Long id) {
-        List<Sectors> sectorsData = sectorsRepository.findByCompany_Id(id);
-        if(sectorsData.isEmpty()){
-            throw new BadRequestException("No sectors found with this name!");
-        }
-        return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
+    public SectorsDTO findByCompanyId(Long id) {
+        Sectors sectorsData = sectorsRepository.findByCompany_Id(id);
+        return sectorsMapper.sectorsToSectorsDTO(sectorsData);
     }
 
-    public List<SectorsDTO> findByNameAndCompanyId(String name, Long id) {
-        List<Sectors> sectorsData = sectorsRepository.findByNameAndCompany_Id(name, id);
-        if(sectorsData.isEmpty()){
-            throw new BadRequestException("No sectors found with this CNPJ");
-        }
-        return sectorsMapper.listSectorsToListSectorsDTO(sectorsData);
+    public SectorsDTO findByNameAndCompanyId(String name, Long id) {
+        Sectors sectorsData = sectorsRepository.findByNameAndCompany_Id(name, id);
+        return sectorsMapper.sectorsToSectorsDTO(sectorsData);
     }
 
     @Transactional
     public Sectors save(SectorsPostRequest sectorsPostRequest) {
-        Company companyData = companyMapper.toCompany(companyService.findById(sectorsPostRequest.companyId()));
+        if (sectorsPostRequest.sigla().length() > 5)
+            throw new RuntimeException("Sigla length mustn't be greater than 5");
+
+        Company companyData = companyRepository.findById(sectorsPostRequest.companyId()).orElseThrow();
         Sectors sectorsData = sectorsMapper.sectorsPostRequestToSectors(sectorsPostRequest);
         sectorsData.setCompany(companyData);
         return sectorsRepository.save(sectorsData);
     }
 
     public SectorsDTO replace(Long id, SectorsPutRequest sectorsPutRequest) {
-        Company companyData = companyMapper.toCompany(companyService.findById(sectorsPutRequest.companyId()));
+        Company companyData = companyRepository.findById(sectorsPutRequest.companyId()).orElseThrow();
         Sectors sectorsData = sectorsRepository.getReferenceById(id);
         Sectors sectorsReplace = sectorsMapper.sectorsPutRequestToSectors(sectorsPutRequest);
         sectorsReplace.setId(sectorsData.getId());

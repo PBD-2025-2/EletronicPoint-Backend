@@ -16,7 +16,13 @@ public class Sectors {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "sigla", length = 5)
+    private String sigla;
+
     @ManyToOne
     @JoinColumn(columnDefinition = "company_id", referencedColumnName = "id")
     private Company company;

@@ -20,7 +20,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @GetMapping
-    public ResponseEntity<List<RoleDTO>> listAll(){
+    public ResponseEntity<List<RoleDTO.Summary>> listAll(){
         return ResponseEntity.ok(roleService.listAll());
     }
 

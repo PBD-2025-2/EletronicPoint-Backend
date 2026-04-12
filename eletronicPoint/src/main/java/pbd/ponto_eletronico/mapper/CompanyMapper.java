@@ -10,7 +10,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CompanyMapper {
-    Company toCompany(CompanyDTO company);
 
     Company toCompany(CompanyPostRequest companyPostRequest);
 
@@ -18,7 +17,9 @@ public interface CompanyMapper {
 
     List<Company> toCompanies(List<CompanyDTO> companyDTOS);
 
-    CompanyDTO toCompanyDto(Company company );
+    CompanyDTO.Details companyToCompanyDTODetails(Company company );
 
-    List<CompanyDTO> toCompanyDtos(List<Company> companies);
+    List<CompanyDTO.Summary> companyToCompanyDTOSummary(List<Company> companies);
+
+    List<CompanyDTO> companiesToCompanyDTOs(List<Company> companies);
 }

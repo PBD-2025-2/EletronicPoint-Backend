@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    List<Company> findByName(String name);
+    Company findByName(String name);
     List<Company> findByCnpj(String cnpj);
+
+    Company findByEmail(String email);
+
+    Company findByPhoneNumber(String phoneNumber);
 }

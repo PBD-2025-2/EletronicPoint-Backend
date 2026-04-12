@@ -18,24 +18,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompanyController {
     private final CompanyService companyService;
-
-    @GetMapping(path = "/message")
-    public String greetingMessage() {
-        return companyService.greetingMessage();
-    }
+    
 
     @GetMapping
-    public ResponseEntity<List<CompanyDTO>> findAll(){
+    public ResponseEntity<List<CompanyDTO.Summary>> findAll(){
         return ResponseEntity.ok(companyService.findAll());
     }
 
    @GetMapping(path = "/id/{id}")
-    public ResponseEntity<CompanyDTO> findById(@PathVariable Long id){
+    public ResponseEntity<CompanyDTO.Details> findById(@PathVariable Long id){
         return ResponseEntity.ok(companyService.findById(id));
     }
 
     @GetMapping(path = "/name/{name}")
-    public ResponseEntity<List<CompanyDTO>> findByName(@PathVariable String name){
+    public ResponseEntity<CompanyDTO.Details> findByName(@PathVariable String name){
         return ResponseEntity.ok(companyService.findByName(name));
     }
 

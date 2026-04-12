@@ -23,12 +23,9 @@ public class RosterService {
     private final RosterRepository rosterRepository;
     private final RosterMapper rosterMapper;
 
-    public List<RosterDTO> findAll() throws JsonProcessingException {
+    public List<RosterDTO.Summary> findAll() throws JsonProcessingException {
         List<Roster> rosters = rosterRepository.findAll();
-        if(rosters.isEmpty()){
-            throw new BadRequestException("No rosters found, please register!");
-        }
-        return rosterMapper.listRostertoRosterDTO(rosters);
+        return rosterMapper.rostersToRosterDTOSummary(rosters);
     }
 
     public RosterDTO findById(Long id) {
@@ -42,18 +39,24 @@ public class RosterService {
         if(rosterData.isEmpty()){
             throw new BadRequestException("No rosters found with this name!");
         }
-        return rosterMapper.listRostertoRosterDTO(rosterData);
+        return rosterMapper.rostersToRosterDTOs(rosterData);
     }
 
     public RosterDTO save(RosterPostRequest rosterPostRequest){
-        if(rosterPostRequest instanceof  RosterDiaryPostRequest diaryPostRequest){
-            if (!requestIsValid(diaryPostRequest)) {
-                throw new BadRequestException("Request Invalid");}
-        }
 
         Roster roster = new Roster();
         roster.setName(rosterPostRequest.name());
         roster.setWeeklyWorkload(rosterPostRequest.weeklyWorkload());
+        roster.setDailyWorkloadLimit(rosterPostRequest.dailyWorkloadLimit());
+
+        if(rosterPostRequest instanceof  RosterDiaryPostRequest diaryPostRequest){
+            if (!requestIsValid(diaryPostRequest)) {
+                throw new BadRequestException("Request Invalid");}
+            roster.setWorkPattern(workPatternDiary(diaryPostRequest.schedules()));
+        }
+        if(rosterPostRequest instanceof RosterDutyPostRequest dutyPostRequest){
+            roster.setWorkPattern(workPatternDuty(dutyPostRequest.schedules()));
+        }
         setRosterSchedulesAndType(roster, rosterPostRequest);
         Roster rosterData = rosterRepository.save(roster);
         return rosterMapper.rosterToRosterDTO(rosterData);
@@ -68,6 +71,7 @@ public class RosterService {
         rosterData.setId(id);
         rosterData.setName(rosterPutRequest.name());
         rosterData.setWeeklyWorkload(rosterPutRequest.weeklyWorkload());
+        rosterData.setDailyWorkloadLimit(rosterPutRequest.dailyWorkloadLimit());
         setRosterSchedulesAndType(rosterData, ((RosterPostRequest) rosterPutRequest));
         return rosterMapper.rosterToRosterDTO(rosterRepository.save(rosterData));
     }
@@ -124,5 +128,24 @@ public class RosterService {
                 .anyMatch(day -> !seen.add(day));
 
         return !hasDuplicates;
+    }
+
+    private String workPatternDiary(List<DailySchedule> schedules){
+        int size = schedules.size();
+
+        return switch (size) {
+            case 1 -> "1x6";
+            case 2 -> "2x5";
+            case 3 -> "3x4";
+            case 4 -> "4x3";
+            case 5 -> "5x2";
+            case 6 -> "6x1";
+            case 7 -> "7x0";
+            default -> "0x0";
+        };
+
+    }
+    private String workPatternDuty(DutySchedules dutySchedules){
+        return dutySchedules.workDuration() + "x" + dutySchedules.timeOff();
     }
 }

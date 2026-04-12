@@ -23,7 +23,7 @@ public class RosterController {
     private final RosterService rosterService;
 
     @GetMapping
-    public ResponseEntity<List<RosterDTO>> findAll() throws JsonProcessingException {
+    public ResponseEntity<List<RosterDTO.Summary>> findAll() throws JsonProcessingException {
         return ResponseEntity.ok(rosterService.findAll());
     }
 

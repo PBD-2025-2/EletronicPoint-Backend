@@ -5,13 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pbd.ponto_eletronico.dto.RoleDTO;
 import pbd.ponto_eletronico.dto.SectorsDTO;
-import pbd.ponto_eletronico.entity.EmployeesCompanies;
-import pbd.ponto_eletronico.entity.EmployeesRoles;
 import pbd.ponto_eletronico.entity.Sectors;
-import pbd.ponto_eletronico.request.EmployeesCompaniesPostRequest;
-import pbd.ponto_eletronico.request.EmployeesRolesPutRequest;
 import pbd.ponto_eletronico.request.SectorsPostRequest;
 import pbd.ponto_eletronico.request.SectorsPutRequest;
 import pbd.ponto_eletronico.service.SectorsService;
@@ -40,12 +35,12 @@ public class SectorsController {
     }
 
     @GetMapping(path = "/companyId/{id}")
-    public ResponseEntity<List<SectorsDTO>> findByCompanyId(@PathVariable Long id) {
+    public ResponseEntity<SectorsDTO> findByCompanyId(@PathVariable Long id) {
         return  ResponseEntity.ok(sectorsService.findByCompanyId(id));
     }
 
     @GetMapping(path = "/name/{name}/companyId/{id}")
-    public ResponseEntity<List<SectorsDTO>> findByNameAndCompanyId(@PathVariable String name, @PathVariable Long id) {
+    public ResponseEntity<SectorsDTO> findByNameAndCompanyId(@PathVariable String name, @PathVariable Long id) {
         return  ResponseEntity.ok(sectorsService.findByNameAndCompanyId(name, id));
     }
 

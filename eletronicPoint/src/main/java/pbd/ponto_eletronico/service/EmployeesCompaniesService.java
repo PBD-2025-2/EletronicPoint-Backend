@@ -8,6 +8,7 @@ import pbd.ponto_eletronico.exception.BadRequestException;
 import pbd.ponto_eletronico.mapper.CompanyMapper;
 import pbd.ponto_eletronico.mapper.EmployeeMapper;
 import pbd.ponto_eletronico.mapper.EmployeesCompaniesMapper;
+import pbd.ponto_eletronico.repository.CompanyRepository;
 import pbd.ponto_eletronico.repository.EmployeesCompaniesRepository;
 import pbd.ponto_eletronico.request.EmployeesCompaniesPostRequest;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,7 @@ public class EmployeesCompaniesService {
     private final EmployeeMapper employeeMapper;
     private final CompanyService companyService;
     private final CompanyMapper companyMapper;
+    private final CompanyRepository companyRepository;
 
     public List<EmployeesCompaniesDTO> findAll(){
         List<EmployeesCompanies> employeesCompanies = employeesCompaniesRepository.findAll();
@@ -61,7 +63,7 @@ public class EmployeesCompaniesService {
 
     @Transactional
     public EmployeesCompanies save(EmployeesCompaniesPostRequest employeesCompaniesPostRequest) {
-        Company companyData = companyMapper.toCompany(companyService.findById(employeesCompaniesPostRequest.companyId()));
+        Company companyData = companyRepository.getReferenceById(employeesCompaniesPostRequest.companyId());
         Employee employeeData = employeeMapper.toEmployee(employeeService.findById(employeesCompaniesPostRequest.employeeId()));
         EmployeesCompanies employeesCompaniesData = employeesCompaniesMapper.toEmployeesCompanies(employeesCompaniesPostRequest);
         employeesCompaniesData.setCompany(companyData);
